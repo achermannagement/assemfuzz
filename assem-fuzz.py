@@ -6,9 +6,7 @@ import os
 import difflib
 import string
 
-passed = True
-
-N = 10000
+N = 100000000
 MAX_SIZE=2**15-1
 
 SYMBOL_NAME_MIN_SIZE = 5
@@ -30,6 +28,7 @@ for i in range(16):
     PREDEFINED_SYMBOLS.append("R{}".format(i))
 
 def main():
+    passed = True
     onWindows = False
     if os.name == 'nt': # detect whether the platform I am running on is Windows
         onWindows = True
@@ -37,12 +36,16 @@ def main():
     for i in range((N // MAX_SIZE)+1):
         fuzzer = RandomFuzzer()
         handler = Handler(fuzzer, onWindows)
+        if not handler.success():
+            passed = False
     print("PASSED ALL TESTS? " + str(passed))
 
 class Handler():
 
     def __init__(self, fuzzer, onWindows=True):
 
+        self.result = False
+      
         # have fuzzer prepare input file
         fuzzer.prepareFile()
 
@@ -82,15 +85,18 @@ class Handler():
         os.chdir("..")
         # need to compare files by contents
         if filecmp.cmp("mine/" + PATH_TO_TEST_OUTPUT, "theirs/" + PATH_TO_TEST_OUTPUT, shallow=False):
+            self.result = True
             print("Test passed")
         else:
             print("Test failed")
-            passed = False
             diff = difflib.unified_diff(open("mine/" + PATH_TO_TEST_OUTPUT, "r").readlines(),
             open("theirs/" + PATH_TO_TEST_OUTPUT, "r").readlines())
             diff_file = open("diff", "w")
             for line in diff:
                 diff_file.write(line)
+                
+    def success(self):
+      return self.result
 
 class RandomFuzzer():
 
