@@ -25,12 +25,15 @@ COMP_RUN_STRING_WINDOWS = "theirs/Assembler.bat {}".format(
 COMP_RUN_STRING_LINUX = "theirs/Assembler.sh {}".format(
 "theirs/" + PATH_TO_TEST_FILE)
 
+# specifications of the hack assembly language
 DESTS = ["A", "M", "D", "AM", "AD", "MD", "AMD"]
 OPS = ["0", "1", "-1", "D", "A", "!D", "!A", "-D", "-A",
 "D+1", "A+1", "D-1", "A-1", "D+A", "D-A", "D&A", "D|A",
 "M", "!M", "-M", "M+1", "M-1", "D+M", "D-M", "M-D", "D&M", "D|M"]
 JUMPS = ["JGT", "JEQ", "JGE", "JLT", "JNE", "JLE", "JMP"]
 PREDEFINED_SYMBOLS = ["SP", "LCL", "ARG", "THIS", "THAT", "SCREEN", "KBD"]
+JUMP_LABELS = "AMD0"
+VALID_SYMBOL_CHARS = "_.$:"
 
 for i in range(16):
   PREDEFINED_SYMBOLS.append("R{}".format(i))
@@ -146,11 +149,11 @@ class RandomFuzzer():
     return returned
 
   def makeValidName(self):
-    valid = random.choice("_.$:" + string.ascii_lowercase 
+    valid = random.choice(VALID_SYMBOL_CHARS + string.ascii_lowercase 
     + string.ascii_uppercase)
     size = random.randint(SYMBOL_NAME_MIN_SIZE, SYMBOL_NAME_MAX_SIZE)
     for _ in range(size-1):
-      valid += random.choice("_.$:" + string.ascii_lowercase 
+      valid += random.choice(VALID_SYMBOL_CHARS + string.ascii_lowercase 
       + string.ascii_uppercase + string.digits)
     return valid
 
@@ -179,10 +182,11 @@ class RandomFuzzer():
       self.labels.append(label)
       inst = "({})".format(label)
     elif inst_type == "JUMP":
-      inst = "{};{}".format(random.choice("AMD0"), self.jump())
+      inst = "{};{}".format(random.choice(JUMP_LABELS), self.jump())
     else:
       inst = ""
     if random.choice(["COMMENT", "NO"]) == "COMMENT":
+      # add comment containing many characters
       inst += " // comment !@#$%^&*()'\"\\/*"
     return inst
 
