@@ -32,5 +32,8 @@ COMP_RUN_STRING_WINDOWS = "theirs/Assembler.bat {}".format(
 COMP_RUN_STRING_LINUX = "theirs/Assembler.sh {}".format(
 "theirs/" + PATH_TO_TEST_FILE)
 
+MY_FOLDER = "mine/"
+THEIR_FOLDER = "theirs/"
+
 SYMBOL_NAME_MIN_SIZE = 5
 SYMBOL_NAME_MAX_SIZE = 12
