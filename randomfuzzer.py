@@ -23,7 +23,7 @@ Copyright (C) 2017  Joshua Achermann
 import random
 import string
 
-from definitions import *
+import definitions
 import hack
 
 class RandomFuzzer():
@@ -61,8 +61,8 @@ class RandomFuzzer():
   def makeValidName(self):
     valid = random.choice(hack.VALID_SYMBOL_CHARS
     + string.ascii_lowercase + string.ascii_uppercase)
-    size = random.randint(SYMBOL_NAME_MIN_SIZE
-    , SYMBOL_NAME_MAX_SIZE)
+    size = random.randint(definitions.SYMBOL_NAME_MIN_SIZE
+    , definitions.SYMBOL_NAME_MAX_SIZE)
     for _ in range(size-1):
       valid += random.choice(hack.VALID_SYMBOL_CHARS
       + string.ascii_lowercase + string.ascii_uppercase + string.digits)
