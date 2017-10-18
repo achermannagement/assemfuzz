@@ -24,7 +24,7 @@ Copyright (C) 2017  Joshua Achermann
 import os
 import argparse
 
-from definitions import *
+import definitions
 import hack
 import handler
 import randomFuzzer
@@ -42,8 +42,9 @@ def main():
   if os.name == 'nt':
     onWindows = True
   for i in range((args.lines // hack.MAX_SIZE)+1):
-    fuzzer = randomFuzzer.RandomFuzzer(PATH_TO_TEST_FILE)
-    handlerInst = handler.Handler(fuzzer, PATH_TO_TEST_OUTPUT, onWindows)
+    fuzzer = randomFuzzer.RandomFuzzer(definitions.PATH_TO_TEST_FILE)
+    handlerInst = handler.Handler(fuzzer, definitions.PATH_TO_TEST_OUTPUT, onWindows)
+    print("Test {}: Passed? {}".format(i, handlerInst.success()))
     if not handlerInst.success():
       passed = False
   print("PASSED ALL TESTS? " + str(passed))
