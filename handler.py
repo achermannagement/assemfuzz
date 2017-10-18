@@ -26,35 +26,35 @@ import shutil
 import filecmp
 import difflib
 
-from definitions import *
+import definitions
 
 class Handler():
   def __init__(self, fuzzer, testOutput, onWindows=True):
     self.result = False
     self.fuzzer = fuzzer
-    self.testOutput = testOutput
+    self.test_output = testOutput
     # have fuzzer prepare input file
-    self.fuzzer.prepareFile()
+    self.fuzzer.prepare_file()
     self.clean()
     # copy to each directory
-    shutil.copy(self.fuzzer.outFile(), MY_FOLDER
-    + self.fuzzer.outFile())
-    shutil.copy(self.fuzzer.outFile(), THEIR_FOLDER
-    + self.fuzzer.outFile())
+    shutil.copy(self.fuzzer.out_file(), definitions.MY_FOLDER
+    + self.fuzzer.out_file())
+    shutil.copy(self.fuzzer.out_file(), definitions.THEIR_FOLDER
+    + self.fuzzer.out_file())
     # do my assembler
-    result = subprocess.run(RUN_STRING, stdout=subprocess.PIPE,
+    result = subprocess.run(definitions.RUN_STRING, stdout=subprocess.PIPE,
     stderr = subprocess.PIPE, shell=True)
     # check result
     self.check_result(result)
     # move result to folder
-    os.rename(self.testOutput, MY_FOLDER + self.testOutput)
+    os.rename(self.test_output, definitions.MY_FOLDER + self.test_output)
     # run the standard assembler
-    if onWindows == True:
-      result = subprocess.run(COMP_RUN_STRING_WINDOWS,
-      stdout = subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    if onWindows is True:
+      result = subprocess.run(definitions.COMP_RUN_STRING_WINDOWS,
+      stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     else:
-      result = subprocess.run(COMP_RUN_STRING_LINUX,
-      stdout = subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+      result = subprocess.run(definitions.COMP_RUN_STRING_LINUX,
+      stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     # check result
     self.check_result(result)
     # need to compare files by contents
@@ -62,32 +62,30 @@ class Handler():
 
   def clean(self):
     # clean test folders
-    if os.path.exists(MY_FOLDER + self.fuzzer.outFile()):
-      os.remove(MY_FOLDER + self.fuzzer.outFile())
-    if os.path.exists(THEIR_FOLDER + self.fuzzer.outFile()):
-      os.remove(THEIR_FOLDER + self.fuzzer.outFile())
-    if os.path.exists(MY_FOLDER + self.testOutput):
-      os.remove(MY_FOLDER + self.testOutput)
-    if os.path.exists(THEIR_FOLDER + self.testOutput):
-      os.remove(THEIR_FOLDER + self.testOutput)
+    if os.path.exists(definitions.MY_FOLDER + self.fuzzer.out_file()):
+      os.remove(definitions.MY_FOLDER + self.fuzzer.out_file())
+    if os.path.exists(definitions.THEIR_FOLDER + self.fuzzer.out_file()):
+      os.remove(definitions.THEIR_FOLDER + self.fuzzer.out_file())
+    if os.path.exists(definitions.MY_FOLDER + self.test_output):
+      os.remove(definitions.MY_FOLDER + self.test_output)
+    if os.path.exists(definitions.THEIR_FOLDER + self.test_output):
+      os.remove(definitions.THEIR_FOLDER + self.test_output)
 
   def check_result(self, result):
-    if(result.returncode != 0):
+    if result.returncode != 0:
       print("Exception! @ " + self.fuzzer.log())
-      type = str(result.stderr).split(":")[0][2:]
-      print("Type: {}".format(type))
-      raise(Exception())
+      except_type = str(result.stderr).split(":")[0][2:]
+      print("Type: {}".format(except_type))
+      raise Exception()
 
   def compare_output(self):
-    if filecmp.cmp(MY_FOLDER + self.testOutput, THEIR_FOLDER
-    + self.testOutput, shallow=False):
+    if filecmp.cmp(definitions.MY_FOLDER + self.test_output, definitions.THEIR_FOLDER
+    + self.test_output, shallow=False):
       self.result = True
-      print("Test passed")
     else:
-      print("Test failed")
-      diff = difflib.unified_diff(open(MY_FOLDER + self.testOutput
+      diff = difflib.unified_diff(open(definitions.MY_FOLDER + self.test_output
       , "r").readlines(),
-      open(THEIR_FOLDER + self.testOutput, "r").readlines())
+      open(definitions.THEIR_FOLDER + self.test_output, "r").readlines())
       diff_file = open("diff", "w")
       for line in diff:
         diff_file.write(line)

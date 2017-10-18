@@ -32,21 +32,21 @@ class RandomFuzzer():
     self.contents = []
     self.variables = []
     self.labels = []
-    self.fileName = fileName
-    for i in range(self.length):
-      self.contents.append(self.makeRandomInstruction())
+    self.file_name = fileName
+    for _ in range(self.length):
+      self.contents.append(self.make_random_instruction())
     self.contents = "\n".join(self.contents)
-    self.file = open(fileName, "wb")
+    self.file = open(self.file_name, "wb")
 
-  def outFile(self):
-    return self.fileName
+  def out_file(self):
+    return self.file_name
 
-  def prepareFile(self):
+  def prepare_file(self):
     self.file.write(self.contents.encode("utf-8"))
 
   def load(self):
     if random.choice(["NEW", "EXISTING"]) == "EXISTING":
-      choices = [random.randint(0,hack.MAX_SIZE-1)]
+      choices = [random.randint(0, hack.MAX_SIZE-1)]
       choices.append(random.choice(hack.PREDEFINED_SYMBOLS))
       if self.variables:
         choices.append(random.choice(self.variables))
@@ -54,11 +54,12 @@ class RandomFuzzer():
         choices.append(random.choice(self.labels))
       returned = random.choice(choices)
     else:
-      returned = self.makeValidName()
+      returned = self.make_valid_name()
       self.variables.append(returned)
     return returned
 
-  def makeValidName(self):
+  @staticmethod
+  def make_valid_name():
     valid = random.choice(hack.VALID_SYMBOL_CHARS
     + string.ascii_lowercase + string.ascii_uppercase)
     size = random.randint(definitions.SYMBOL_NAME_MIN_SIZE
@@ -72,16 +73,19 @@ class RandomFuzzer():
     return "RandomFuzzer file: {} length: {}".format(self.file,
     self.length)
 
-  def dest(self):
+  @staticmethod
+  def dest():
     return random.choice(hack.DESTS)
 
-  def operand(self):
+  @staticmethod
+  def operand():
     return random.choice(hack.OPS)
 
-  def jump(self):
+  @staticmethod
+  def jump():
     return random.choice(hack.JUMPS)
 
-  def makeRandomInstruction(self):
+  def make_random_instruction(self):
     inst_type = random.choice(["ADDR", "COMP", "JUMP", "LABEL"
     , "EMPTY"])
     if inst_type == "ADDR":
@@ -89,7 +93,7 @@ class RandomFuzzer():
     elif inst_type == "COMP":
       inst = hack.COMP_INST.format(self.dest(), self.operand())
     elif inst_type == "LABEL":
-      label = self.makeValidName()
+      label = self.make_valid_name()
       self.labels.append(label)
       inst = hack.LABEL_INST.format(label)
     elif inst_type == "JUMP":

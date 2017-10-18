@@ -1,0 +1,93 @@
+# assem-fuzz
+
+This is a project to make a fuzzing platform for the Hack assembly platform from the Nand2Tetris (http://nand2tetris.org/) series.
+
+## Getting Started
+
+Grab the Nand2Tetris Software Suite to grab the reference assembler.
+
+### Prerequisites
+
+Nand2Tetris Software Suite: (http://nand2tetris.org/software.php)
+
+### Installing
+
+This will give an example of how to use the program by changing it to fuzz the reference compiler against itself.
+
+Unzip the software suite.
+
+```
+cd ~/Downloads
+tar -
+```
+
+Clone the repo.
+
+```
+git clone https://github.com/achermannagement/assem-fuzz.git
+```
+
+Make two directories.
+
+```
+cd assem-fuzz
+mkdir mine
+mkdir theirs
+```
+
+Move the tools into both folders.
+
+```
+
+```
+
+Run the program.
+
+```
+python3 assem-fuzz.py 10000
+Test passed
+All tests passed? True
+```
+
+## Running the tests
+
+Explain how to run the automated tests for this system
+
+### Break down into end to end tests
+
+Explain what these tests test and why
+
+```
+Give an example
+```
+
+### And coding style tests
+
+Explain what these tests test and why
+
+```
+Give an example
+```
+
+## Built With
+
+* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
+* [Maven](https://maven.apache.org/) - Dependency Management
+* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+
+## Authors
+
+* **Joshua Achermann** - *Initial work* - [achermannagement](https://github.com/achermannagement)
+
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the GPL License - see the LICENSE file for details
+
+## Acknowledgments
+
+* Hat tip to anyone who's code was used
+* Inspiration
+* etc
+

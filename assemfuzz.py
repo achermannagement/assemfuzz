@@ -27,25 +27,25 @@ import argparse
 import definitions
 import hack
 import handler
-import randomFuzzer
+import randomfuzzer
 
 def main():
   # parse arguments
   parser = argparse.ArgumentParser()
-  parser.add_argument("lines"
-  , help="rough # of lines of assembly code to fuzz", type=int)
+  parser.add_argument("lines",
+    help="rough # of lines of assembly code to fuzz", type=int)
   args = parser.parse_args()
   # begin the program
   passed = True
-  onWindows = False
+  on_windows = False
   # detect whether the platform I am running on is Windows
   if os.name == 'nt':
-    onWindows = True
+    on_windows = True
   for i in range((args.lines // hack.MAX_SIZE)+1):
-    fuzzer = randomFuzzer.RandomFuzzer(definitions.PATH_TO_TEST_FILE)
-    handlerInst = handler.Handler(fuzzer, definitions.PATH_TO_TEST_OUTPUT, onWindows)
-    print("Test {}: Passed? {}".format(i, handlerInst.success()))
-    if not handlerInst.success():
+    fuzzer = randomfuzzer.RandomFuzzer(definitions.PATH_TO_TEST_FILE)
+    handler_inst = handler.Handler(fuzzer, definitions.PATH_TO_TEST_OUTPUT, on_windows)
+    print("Test {}: Passed? {}".format(i, handler_inst.success()))
+    if not handler_inst.success():
       passed = False
   print("PASSED ALL TESTS? " + str(passed))
 
