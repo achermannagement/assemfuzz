@@ -21,19 +21,20 @@ Copyright (C) 2017  Joshua Achermann
   email: joshua.achermann@gmail.com
 """
 
-MY_FOLDER = "mine/"
-THEIR_FOLDER = "theirs/"
+import os
+
+MY_FOLDER = "mine"
+THEIR_FOLDER = "theirs"
 
 FILE_TITLE = "fuzz"
 PATH_TO_TEST_FILE = FILE_TITLE + ".asm"
 PATH_TO_TEST_OUTPUT = FILE_TITLE + ".hack"
 PATH_TO_ASSEMBLER = "Assembler"
-RUN_STRING = "java -cp {} {} {}".format(MY_FOLDER,
-PATH_TO_ASSEMBLER, PATH_TO_TEST_FILE)
-COMP_RUN_STRING_WINDOWS = "{}/Assembler.bat {}".format(
-THEIR_FOLDER, THEIR_FOLDER + PATH_TO_TEST_FILE)
-COMP_RUN_STRING_LINUX = "{}/Assembler.sh {}".format(
-THEIR_FOLDER, THEIR_FOLDER + PATH_TO_TEST_FILE)
+RUN_STRING = "java -cp {} {} {}".format(MY_FOLDER, PATH_TO_ASSEMBLER, PATH_TO_TEST_FILE)
+COMP_RUN_STRING_WINDOWS = "{} {}".format(os.path.join(THEIR_FOLDER, PATH_TO_ASSEMBLER + ".bat"),
+os.path.join(THEIR_FOLDER, PATH_TO_TEST_FILE))
+COMP_RUN_STRING_LINUX = "{} {}".format(os.path.join(THEIR_FOLDER, PATH_TO_ASSEMBLER + ".sh"),
+os.path.join(THEIR_FOLDER, PATH_TO_TEST_FILE))
 
 SYMBOL_NAME_MIN_SIZE = 5
 SYMBOL_NAME_MAX_SIZE = 12

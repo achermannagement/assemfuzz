@@ -37,17 +37,15 @@ class Handler():
     self.fuzzer.prepare_file()
     self.clean()
     # copy to each directory
-    shutil.copy(self.fuzzer.out_file(), definitions.MY_FOLDER
-    + self.fuzzer.out_file())
-    shutil.copy(self.fuzzer.out_file(), definitions.THEIR_FOLDER
-    + self.fuzzer.out_file())
+    shutil.copy(self.fuzzer.out_file(), os.path.join(definitions.MY_FOLDER, self.fuzzer.out_file()))
+    shutil.copy(self.fuzzer.out_file(), os.path.join(definitions.THEIR_FOLDER, self.fuzzer.out_file()))
     # do my assembler
     result = subprocess.run(definitions.RUN_STRING, stdout=subprocess.PIPE,
     stderr = subprocess.PIPE, shell=True)
     # check result
     self.check_result(result)
     # move result to folder
-    os.rename(self.test_output, definitions.MY_FOLDER + self.test_output)
+    os.rename(self.test_output, os.path.join(definitions.MY_FOLDER, self.test_output))
     # run the standard assembler
     if onWindows is True:
       result = subprocess.run(definitions.COMP_RUN_STRING_WINDOWS,
@@ -62,14 +60,14 @@ class Handler():
 
   def clean(self):
     # clean test folders
-    if os.path.exists(definitions.MY_FOLDER + self.fuzzer.out_file()):
-      os.remove(definitions.MY_FOLDER + self.fuzzer.out_file())
-    if os.path.exists(definitions.THEIR_FOLDER + self.fuzzer.out_file()):
-      os.remove(definitions.THEIR_FOLDER + self.fuzzer.out_file())
-    if os.path.exists(definitions.MY_FOLDER + self.test_output):
-      os.remove(definitions.MY_FOLDER + self.test_output)
-    if os.path.exists(definitions.THEIR_FOLDER + self.test_output):
-      os.remove(definitions.THEIR_FOLDER + self.test_output)
+    if os.path.exists(os.path.join(definitions.MY_FOLDER, self.fuzzer.out_file())):
+      os.remove(os.path.join(definitions.MY_FOLDER, self.fuzzer.out_file()))
+    if os.path.exists(os.path.join(definitions.THEIR_FOLDER, self.fuzzer.out_file())):
+      os.remove(os.path.join(definitions.THEIR_FOLDER, self.fuzzer.out_file()))
+    if os.path.exists(os.path.join(definitions.MY_FOLDER, self.test_output)):
+      os.remove(os.path.join(definitions.MY_FOLDER, self.test_output))
+    if os.path.exists(os.path.join(definitions.THEIR_FOLDER, self.test_output)):
+      os.remove(os.path.join(definitions.THEIR_FOLDER, self.test_output))
 
   def check_result(self, result):
     if result.returncode != 0:
@@ -79,13 +77,13 @@ class Handler():
       raise Exception()
 
   def compare_output(self):
-    if filecmp.cmp(definitions.MY_FOLDER + self.test_output, definitions.THEIR_FOLDER
-    + self.test_output, shallow=False):
+    if filecmp.cmp(os.path.join(definitions.MY_FOLDER, self.test_output), os.path.join(definitions.THEIR_FOLDER,
+    self.test_output), shallow=False):
       self.result = True
     else:
-      diff = difflib.unified_diff(open(definitions.MY_FOLDER + self.test_output
+      diff = difflib.unified_diff(open(os.path.join(definitions.MY_FOLDER, self.test_output)
       , "r").readlines(),
-      open(definitions.THEIR_FOLDER + self.test_output, "r").readlines())
+      open(os.path.join(definitions.THEIR_FOLDER, self.test_output), "r").readlines())
       diff_file = open("diff", "w")
       for line in diff:
         diff_file.write(line)
