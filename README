@@ -12,13 +12,13 @@ Nand2Tetris Software Suite: (http://nand2tetris.org/software.php)
 
 ### Installing
 
-This will give an example of how to use the program by changing it to fuzz the reference compiler against itself.
+This will give an example of how to use the program by changing it to fuzz the reference compiler against itself on a linux system.
 
 Unzip the software suite.
 
 ```
 cd ~/Downloads
-tar -
+unzip nand2tetris.zip
 ```
 
 Clone the repo.
@@ -35,13 +35,23 @@ mkdir mine
 mkdir theirs
 ```
 
-Move the tools into both folders.
+Move the tools into both folders as executable.
 
 ```
-
+cd ..
+cp -r nand2tetris/tools/* assem-fuzz/mine
+cp -r nand2tetris/tools/* assem-fuzz/theirs
+cd assem-fuzz
+chmod +x mine/Assembler.sh
+chmod +x theirs/Assembler.sh
 ```
 
-Run the program.
+Update the RUN_STRING in definitions.py
+```
+RUN_STRING = "{}/{}.sh {}".format(MY_FOLDER, PATH_TO_ASSEMBLER, PATH_TO_TEST_FILE)
+```
+
+Run the program
 
 ```
 python3 assem-fuzz.py 10000

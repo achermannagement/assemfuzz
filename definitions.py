@@ -21,19 +21,19 @@ Copyright (C) 2017  Joshua Achermann
   email: joshua.achermann@gmail.com
 """
 
+MY_FOLDER = "mine/"
+THEIR_FOLDER = "theirs/"
+
 FILE_TITLE = "fuzz"
 PATH_TO_TEST_FILE = FILE_TITLE + ".asm"
 PATH_TO_TEST_OUTPUT = FILE_TITLE + ".hack"
 PATH_TO_ASSEMBLER = "Assembler"
-RUN_STRING = "java -cp mine {} {}".format(PATH_TO_ASSEMBLER
-, PATH_TO_TEST_FILE)
-COMP_RUN_STRING_WINDOWS = "theirs/Assembler.bat {}".format(
-"theirs/" + PATH_TO_TEST_FILE)
-COMP_RUN_STRING_LINUX = "theirs/Assembler.sh {}".format(
-"theirs/" + PATH_TO_TEST_FILE)
-
-MY_FOLDER = "mine/"
-THEIR_FOLDER = "theirs/"
+RUN_STRING = "java -cp {} {} {}".format(MY_FOLDER,
+PATH_TO_ASSEMBLER, PATH_TO_TEST_FILE)
+COMP_RUN_STRING_WINDOWS = "{}/Assembler.bat {}".format(
+THEIR_FOLDER, THEIR_FOLDER + PATH_TO_TEST_FILE)
+COMP_RUN_STRING_LINUX = "{}/Assembler.sh {}".format(
+THEIR_FOLDER, THEIR_FOLDER + PATH_TO_TEST_FILE)
 
 SYMBOL_NAME_MIN_SIZE = 5
 SYMBOL_NAME_MAX_SIZE = 12
