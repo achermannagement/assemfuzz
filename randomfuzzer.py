@@ -1,24 +1,24 @@
 """
-creates a random valid Hack assembly file
+Creates a random valid Hack assembly file.
 
 Copyright (C) 2017  Joshua Achermann
 
-  This file is part of assem-fuzz.
+This file is part of assem-fuzz.
 
-  assem-fuzz is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+assem-fuzz is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-  email: joshua.achermann@gmail.com
+email: joshua.achermann@gmail.com
 """
 import random
 import string
@@ -27,80 +27,91 @@ import definitions
 import hack
 
 class RandomFuzzer():
-  def __init__(self, fileName):
-    self.length = hack.MAX_SIZE
-    self.contents = []
-    self.variables = []
-    self.labels = []
-    self.file_name = fileName
-    for _ in range(self.length):
-      self.contents.append(self.make_random_instruction())
-    self.contents = "\n".join(self.contents)
-    self.file = open(self.file_name, "wb")
+    """This fuzzer prepares a valid code for the language spec provided.
+It will be filled with random valid instructions for the specification language.
+The output then can be fed into the fuzzed program to find problems."""
+    def __init__(self, fileName):
+        self.length = hack.MAX_SIZE
+        self.contents = []
+        self.variables = []
+        self.labels = []
+        self.file_name = fileName
+        for _ in range(self.length):
+            self.contents.append(self.make_random_instruction())
+        self.contents = "\n".join(self.contents)
+        self.file = open(self.file_name, "wb")
 
-  def out_file(self):
-    return self.file_name
+    def out_file(self):
+        """Returns the name of the fuzzer produced file."""
+        return self.file_name
 
-  def prepare_file(self):
-    self.file.write(self.contents.encode("utf-8"))
+    def prepare_file(self):
+        """Once the fuzzer has generated the code, this function writes it to the file"""
+        self.file.write(self.contents.encode("utf-8"))
 
-  def load(self):
-    if random.choice(["NEW", "EXISTING"]) == "EXISTING":
-      choices = [random.randint(0, hack.MAX_SIZE-1)]
-      choices.append(random.choice(hack.PREDEFINED_SYMBOLS))
-      if self.variables:
-        choices.append(random.choice(self.variables))
-      if self.labels:
-        choices.append(random.choice(self.labels))
-      returned = random.choice(choices)
-    else:
-      returned = self.make_valid_name()
-      self.variables.append(returned)
-    return returned
+    def load(self):
+        """Loads a variable, but also has the choice to generate a new one"""
+        if random.choice(["NEW", "EXISTING"]) == "EXISTING":
+            choices = [random.randint(0, hack.MAX_SIZE-1)]
+            choices.append(random.choice(hack.PREDEFINED_SYMBOLS))
+            if self.variables:
+                choices.append(random.choice(self.variables))
+            if self.labels:
+                choices.append(random.choice(self.labels))
+            returned = random.choice(choices)
+        else:
+            returned = self.make_valid_name()
+            self.variables.append(returned)
+        return returned
 
-  @staticmethod
-  def make_valid_name():
-    valid = random.choice(hack.VALID_SYMBOL_CHARS
-    + string.ascii_lowercase + string.ascii_uppercase)
-    size = random.randint(definitions.SYMBOL_NAME_MIN_SIZE
-    , definitions.SYMBOL_NAME_MAX_SIZE)
-    for _ in range(size-1):
-      valid += random.choice(hack.VALID_SYMBOL_CHARS
-      + string.ascii_lowercase + string.ascii_uppercase + string.digits)
-    return valid
+    @staticmethod
+    def make_valid_name():
+        """Make a valid name for the provided language spec"""
+        valid = random.choice(hack.VALID_SYMBOL_CHARS +
+                              string.ascii_lowercase + string.ascii_uppercase)
+        size = random.randint(definitions.SYMBOL_NAME_MIN_SIZE,
+                              definitions.SYMBOL_NAME_MAX_SIZE)
+        for _ in range(size-1):
+            valid += random.choice(hack.VALID_SYMBOL_CHARS +
+                                   string.ascii_lowercase +
+                                   string.ascii_uppercase + string.digits)
+        return valid
 
-  def log(self):
-    return "RandomFuzzer file: {} length: {}".format(self.file,
-    self.length)
+    def log(self):
+        """Returns some debugging information"""
+        return "RandomFuzzer file: {} length: {}".format(self.file,
+                                                         self.length)
 
-  @staticmethod
-  def dest():
-    return random.choice(hack.DESTS)
+    @staticmethod
+    def dest():
+        """Returns a destination instruction"""
+        return random.choice(hack.DESTS)
 
-  @staticmethod
-  def operand():
-    return random.choice(hack.OPS)
+    @staticmethod
+    def operand():
+        """Returns an operand"""
+        return random.choice(hack.OPS)
 
-  @staticmethod
-  def jump():
-    return random.choice(hack.JUMPS)
+    @staticmethod
+    def jump():
+        "Selects a random jump type"
+        return random.choice(hack.JUMPS)
 
-  def make_random_instruction(self):
-    inst_type = random.choice(["ADDR", "COMP", "JUMP", "LABEL"
-    , "EMPTY"])
-    if inst_type == "ADDR":
-      inst = hack.ADDR_INST.format(self.load())
-    elif inst_type == "COMP":
-      inst = hack.COMP_INST.format(self.dest(), self.operand())
-    elif inst_type == "LABEL":
-      label = self.make_valid_name()
-      self.labels.append(label)
-      inst = hack.LABEL_INST.format(label)
-    elif inst_type == "JUMP":
-      inst = hack.JUMP_INST.format(random.choice(hack.JUMP_LABELS), self.jump())
-    else:
-      inst = "" # empty line (might have comment)
-    if random.choice(["COMMENT", "NO"]) == "COMMENT":
-      # add comment containing many characters
-      inst += hack.TEST_COMMENT
-    return inst
+    def make_random_instruction(self):
+        """Generates a random instruction for the fuzzing file"""
+        inst_type = random.choice(["ADDR", "COMP", "JUMP", "LABEL", "EMPTY"])
+        if inst_type == "ADDR":
+            inst = hack.ADDR_INST.format(self.load())
+        elif inst_type == "COMP":
+            inst = hack.COMP_INST.format(self.dest(), self.operand())
+        elif inst_type == "LABEL":
+            label = self.make_valid_name()
+            self.labels.append(label)
+            inst = hack.LABEL_INST.format(label)
+        elif inst_type == "JUMP":
+            inst = hack.JUMP_INST.format(random.choice(hack.JUMP_LABELS), self.jump())
+        else:
+            inst = "" # empty line (might have comment)
+        if random.choice(["COMMENT", "NO"]) == "COMMENT":
+            inst += hack.TEST_COMMENT # add comment containing many characters
+        return inst

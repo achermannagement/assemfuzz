@@ -22,13 +22,13 @@ Copyright (C) 2017  Joshua Achermann
 """
 
 # hack has 15 bit pointers pointing to program memory
-MAX_SIZE=2**15
+MAX_SIZE = 2**15
 
 # valid labels for instruction parts
 DESTS = ["A", "M", "D", "AM", "AD", "MD", "AMD"]
 OPS = ["0", "1", "-1", "D", "A", "!D", "!A", "-D", "-A",
-"D+1", "A+1", "D-1", "A-1", "D+A", "D-A", "D&A", "D|A",
-"M", "!M", "-M", "M+1", "M-1", "D+M", "D-M", "M-D", "D&M", "D|M"]
+       "D+1", "A+1", "D-1", "A-1", "D+A", "D-A", "D&A", "D|A",
+       "M", "!M", "-M", "M+1", "M-1", "D+M", "D-M", "M-D", "D&M", "D|M"]
 JUMPS = ["JGT", "JEQ", "JGE", "JLT", "JNE", "JLE", "JMP"]
 JUMP_LABELS = "AMD0"
 
@@ -39,11 +39,10 @@ LABEL_INST = "({})"
 JUMP_INST = "{};{}"
 
 # special symbols used by the assembler
-PREDEFINED_SYMBOLS = ["SP", "LCL", "ARG", "THIS", "THAT", "SCREEN"
-, "KBD"]
+PREDEFINED_SYMBOLS = ["SP", "LCL", "ARG", "THIS", "THAT", "SCREEN", "KBD"]
 # register symbols
 for i in range(16):
-  PREDEFINED_SYMBOLS.append("R{}".format(i))
+    PREDEFINED_SYMBOLS.append("R{}".format(i))
 
 # valid symbol characters that can be symbol names
 VALID_SYMBOL_CHARS = "_.$:"
