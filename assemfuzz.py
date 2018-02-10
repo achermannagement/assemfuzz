@@ -45,7 +45,8 @@ def main():
     if os.name == 'nt':
         on_windows = True
     for i in range((args.lines // hack.MAX_SIZE)+1):
-        fuzzer = randomfuzzer.RandomFuzzer(definitions.PATH_TO_TEST_FILE)
+        lang_spec = hack.Hack()
+        fuzzer = randomfuzzer.RandomFuzzer(definitions.PATH_TO_TEST_FILE, lang_spec)
         handler_inst = handler.Handler(fuzzer, definitions.PATH_TO_TEST_OUTPUT, on_windows)
         print("Test {}: Passed? {}".format(i, handler_inst.success()))
         if not handler_inst.success():

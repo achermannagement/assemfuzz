@@ -37,6 +37,3 @@ COMP_RUN_STRING_WINDOWS = "{} {}".format(os.path.join(THEIR_FOLDER, PATH_TO_ASSE
                                          os.path.join(THEIR_FOLDER, PATH_TO_TEST_FILE))
 COMP_RUN_STRING_LINUX = "{} {}".format(os.path.join(THEIR_FOLDER, PATH_TO_ASSEMBLER + ".sh"),
                                        os.path.join(THEIR_FOLDER, PATH_TO_TEST_FILE))
-
-SYMBOL_NAME_MIN_SIZE = 5
-SYMBOL_NAME_MAX_SIZE = 12
