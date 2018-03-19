@@ -23,11 +23,30 @@ email: joshua.achermann@gmail.com
 
 import os
 import argparse
+import subprocess
 
 import definitions
 import hack
 import handler
 import randomfuzzer
+
+def my_assembler(output_path):
+    """This is the function we pass into the handler to run our program
+    you will need to edit the run string in the definitions file to fit"""
+    return subprocess.run(definitions.RUN_STRING, stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE, shell=True)
+
+def their_assembler(output_path, windows=False):
+    """This is the function to run the Nand2Tetris reference assembler"""
+    if not windows:
+        result = subprocess.run(definitions.COMP_RUN_STRING_LINUX,
+                          stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE, shell=True)
+    else:
+        result = subprocess.run(definitions.COMP_RUN_STRING_WINDOWS,
+                          stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE, shell=True)
+    return result
 
 def main():
     """Uses the default handler and random fuzzer to run multiple
@@ -47,7 +66,8 @@ def main():
     for i in range((args.lines // hack.MAX_SIZE)+1):
         lang_spec = hack.Hack()
         fuzzer = randomfuzzer.RandomFuzzer(definitions.PATH_TO_TEST_FILE, lang_spec)
-        handler_inst = handler.Handler(fuzzer, definitions.PATH_TO_TEST_OUTPUT, on_windows)
+        handler_inst = handler.Handler(fuzzer, definitions.PATH_TO_TEST_OUTPUT,
+                                       my_assembler, their_assembler, on_windows)
         print("Test {}: Passed? {}".format(i, handler_inst.success()))
         if not handler_inst.success():
             passed = False

@@ -21,7 +21,6 @@ Copyright (C) 2017  Joshua Achermann
   email: joshua.achermann@gmail.com
 """
 import os
-import subprocess
 import shutil
 import filecmp
 import difflib
@@ -32,10 +31,13 @@ class Handler():
     """The handler takes in the fuzzer and uses it to generate the input files,
 runs the fuzzed program against the reference program and compares the results.
 It also does cleanup."""
-    def __init__(self, fuzzer, testOutput, onWindows=True):
+    def __init__(self, fuzzer, test_output, program, ref_program, windows=False):
         self.result = False
         self.fuzzer = fuzzer
-        self.test_output = testOutput
+        self.program = program
+        self.ref_program = ref_program
+        self.test_output = test_output
+        self.windows = windows
         # have fuzzer prepare input file
         self.fuzzer.prepare_file()
         self.clean()
@@ -44,24 +46,28 @@ It also does cleanup."""
                     os.path.join(definitions.MY_FOLDER, self.fuzzer.out_file()))
         shutil.copy(self.fuzzer.out_file(),
                     os.path.join(definitions.THEIR_FOLDER, self.fuzzer.out_file()))
+
         # do my assembler
-        result = subprocess.run(definitions.RUN_STRING, stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE, shell=True)
-        # check result
-        self.check_result(result)
+        self.program_under_test()
+
         # move result to folder
         os.rename(self.test_output, os.path.join(definitions.MY_FOLDER, self.test_output))
+
         # run the standard assembler
-        if onWindows is True:
-            result = subprocess.run(definitions.COMP_RUN_STRING_WINDOWS,
-                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        else:
-            result = subprocess.run(definitions.COMP_RUN_STRING_LINUX,
-                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        # check result
-        self.check_result(result)
+        self.reference_program()
+
         # need to compare files by contents
         self.compare_output()
+
+    def program_under_test(self):
+        """Runs the program function for the program under test"""
+        result = self.program(None)
+        self.check_result(result)
+
+    def reference_program(self):
+        """Runs the program function for the reference program"""
+        result = self.ref_program(None, self.windows)
+        self.check_result(result)
 
     def clean(self):
         """Clean test output."""
