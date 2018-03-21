@@ -27,7 +27,7 @@ import difflib
 
 import definitions
 
-class Handler():
+class CompareHandler():
     """The handler takes in the fuzzer and uses it to generate the input files,
 runs the fuzzed program against the reference program and compares the results.
 It also does cleanup."""

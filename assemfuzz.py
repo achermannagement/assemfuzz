@@ -27,7 +27,7 @@ import subprocess
 
 import definitions
 import hack
-import handler
+import comparehandler
 import randomfuzzer
 
 def my_assembler(output_path):
@@ -66,7 +66,7 @@ def main():
     for i in range((args.lines // hack.MAX_SIZE)+1):
         lang_spec = hack.Hack()
         fuzzer = randomfuzzer.RandomFuzzer(definitions.PATH_TO_TEST_FILE, lang_spec)
-        handler_inst = handler.Handler(fuzzer, definitions.PATH_TO_TEST_OUTPUT,
+        handler_inst = comparehandler.CompareHandler(fuzzer, definitions.PATH_TO_TEST_OUTPUT,
                                        my_assembler, their_assembler, on_windows)
         print("Test {}: Passed? {}".format(i, handler_inst.success()))
         if not handler_inst.success():
