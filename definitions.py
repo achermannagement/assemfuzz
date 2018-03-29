@@ -27,13 +27,8 @@ MY_FOLDER = "mine"
 THEIR_FOLDER = "theirs"
 
 FILE_TITLE = "fuzz"
-PATH_TO_TEST_FILE = FILE_TITLE + ".asm"
-PATH_TO_TEST_OUTPUT = FILE_TITLE + ".hack"
+PATH_TO_TEST_FILE = FILE_TITLE + "_{}_{}.hack"
+PATH_TO_FUZZ_OUTPUT = FILE_TITLE + "_{}_{}.asm"
 DIFF_FILE_NAME = "diff"
 
-PATH_TO_ASSEMBLER = "Assembler"
-RUN_STRING = "java -cp {} {} {}".format(MY_FOLDER, PATH_TO_ASSEMBLER, PATH_TO_TEST_FILE)
-COMP_RUN_STRING_WINDOWS = "{} {}".format(os.path.join(THEIR_FOLDER, PATH_TO_ASSEMBLER + ".bat"),
-                                         os.path.join(THEIR_FOLDER, PATH_TO_TEST_FILE))
-COMP_RUN_STRING_LINUX = "{} {}".format(os.path.join(THEIR_FOLDER, PATH_TO_ASSEMBLER + ".sh"),
-                                       os.path.join(THEIR_FOLDER, PATH_TO_TEST_FILE))
+DEFAULT_ERR_LOG = "err.log"

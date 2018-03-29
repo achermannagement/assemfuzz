@@ -20,6 +20,7 @@ Copyright (C) 2017  Joshua Achermann
 
   email: joshua.achermann@gmail.com
 """
+from langspec import LangSpec
 import random
 import string
 
@@ -52,6 +53,7 @@ for i in range(16):
 
 # valid symbol characters that can be in symbol names
 VALID_SYMBOL_CHARS = "_.$:"
+INVALID_SYMBOL_CHARS = ["@"]
 
 # test comment
 TEST_COMMENT = " // comment !@#$%^&*()'\"\\/*"
@@ -62,11 +64,20 @@ def make_valid_name():
                           string.ascii_lowercase + string.ascii_uppercase)
     size = random.randint(SYMBOL_NAME_MIN_SIZE,
                           SYMBOL_NAME_MAX_SIZE)
-    for _ in range(size-1):
+    for _ in range(size):
         valid += random.choice(VALID_SYMBOL_CHARS +
                                string.ascii_lowercase +
                                string.ascii_uppercase + string.digits)
     return valid
+
+def make_invalid_name():
+    """Make a name that does not follow the language spec"""
+    invalid = random.choice(string.digits)
+    size = random.randint(SYMBOL_NAME_MIN_SIZE,
+                          SYMBOL_NAME_MAX_SIZE)
+    for _ in range(size):
+        invalid += chr(random.randint(0, 255)) # can use any char to create invalid
+    return invalid
 
 def dest():
     """Returns a destination instruction"""
@@ -80,7 +91,7 @@ def jump():
     "Selects a random jump type"
     return random.choice(JUMPS)
 
-class Hack:
+class Hack(LangSpec):
     """This is a language specification wrapper class for the Hack assembly language."""
 
     def __init__(self):
@@ -102,6 +113,12 @@ class Hack:
             self.variables.append(returned)
         return returned
 
+    def make_random_program(self):
+        pass
+
+    def make_invalid_program(self):
+        pass
+
     def make_random_instruction(self):
         """Generates a random valid instruction for the for the hack assembly language"""
         inst_type = random.choice(["ADDR", "COMP", "JUMP", "LABEL", "EMPTY"])
@@ -120,3 +137,7 @@ class Hack:
         if random.choice(["COMMENT", "NO"]) == "COMMENT":
             inst += TEST_COMMENT # add comment containing many characters
         return inst
+
+    def make_invalid_instruction(self):
+        """Generates an invalid instruction"""
+        return make_invalid_name()

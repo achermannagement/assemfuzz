@@ -1,5 +1,6 @@
 """
-Creates a random valid Hack assembly file.
+Creates a random valid Hack assembly file, but then chooses a given line and
+makes it an invalid line to test error handling capabilities.
 
 Copyright (C) 2017  Joshua Achermann
 
@@ -22,17 +23,20 @@ email: joshua.achermann@gmail.com
 """
 from fuzzer import Fuzzer
 import hack
+import random
 
-class RandomFuzzer(Fuzzer):
+class RandomBadFuzzer(Fuzzer):
     """This fuzzer prepares a valid code for the language spec provided.
 It will be filled with random valid instructions for the specification language.
 The output then can be fed into the fuzzed program to find problems."""
     def __init__(self, file_name, lang_spec):
         super().__init__(file_name, lang_spec)
         self.length = hack.MAX_SIZE
-        self.contents = []     
+        self.contents = []
 
     def prepare_file(self):
         for _ in range(self.length):
             self.contents.append(self.lang_spec.make_random_instruction())
+        self.bad_line = random.randint(0, len(self.contents))
+        self.contents[self.bad_line] = self.lang_spec.make_invalid_instruction()
         self.contents = "\n".join(self.contents)

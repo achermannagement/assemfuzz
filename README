@@ -4,7 +4,7 @@ This is a project to make a fuzzing platform for the Hack assembly platform from
 
 ## Getting Started
 
-Grab the Nand2Tetris Software Suite to grab the reference assembler.
+Download the Nand2Tetris Software Suite to grab the reference assembler.
 
 ### Prerequisites
 
@@ -54,7 +54,7 @@ RUN_STRING = "{}/{}.sh {}".format(MY_FOLDER, PATH_TO_ASSEMBLER, PATH_TO_TEST_FIL
 Run the program
 
 ```
-python3 assem-fuzz.py 10000
+python3 assem-fuzz.py
 Test passed
 All tests passed? True
 ```

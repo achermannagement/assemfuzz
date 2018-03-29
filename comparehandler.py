@@ -1,5 +1,7 @@
 """
 handles the fuzzer and programs to be fuzzed
+this handler is designed to fuzz the program with known valid inputs and compare
+the generated output to a reference program
 
 Copyright (C) 2017  Joshua Achermann
 
@@ -21,87 +23,26 @@ Copyright (C) 2017  Joshua Achermann
   email: joshua.achermann@gmail.com
 """
 import os
-import shutil
 import filecmp
-import difflib
 
-import definitions
+from definitions import MY_FOLDER, THEIR_FOLDER
 
-class CompareHandler():
+from handler import Handler
+import randomfuzzer
+
+class CompareHandler(Handler):
     """The handler takes in the fuzzer and uses it to generate the input files,
 runs the fuzzed program against the reference program and compares the results.
 It also does cleanup."""
-    def __init__(self, fuzzer, test_output, program, ref_program, windows=False):
-        self.result = False
-        self.fuzzer = fuzzer
-        self.program = program
-        self.ref_program = ref_program
-        self.test_output = test_output
-        self.windows = windows
-        # have fuzzer prepare input file
-        self.fuzzer.prepare_file()
-        self.clean()
-        # copy to each directory
-        shutil.copy(self.fuzzer.out_file(),
-                    os.path.join(definitions.MY_FOLDER, self.fuzzer.out_file()))
-        shutil.copy(self.fuzzer.out_file(),
-                    os.path.join(definitions.THEIR_FOLDER, self.fuzzer.out_file()))
 
-        # do my assembler
-        self.program_under_test()
+    def prepare_fuzzer(self):
+        return randomfuzzer.RandomFuzzer(self.test_input, self.lang_spec)        
 
-        # move result to folder
-        os.rename(self.test_output, os.path.join(definitions.MY_FOLDER, self.test_output))
-
-        # run the standard assembler
-        self.reference_program()
-
-        # need to compare files by contents
-        self.compare_output()
-
-    def program_under_test(self):
-        """Runs the program function for the program under test"""
-        result = self.program(None)
-        self.check_result(result)
-
-    def reference_program(self):
-        """Runs the program function for the reference program"""
-        result = self.ref_program(None, self.windows)
-        self.check_result(result)
-
-    def clean(self):
-        """Clean test output."""
-        if os.path.exists(os.path.join(definitions.MY_FOLDER, self.fuzzer.out_file())):
-            os.remove(os.path.join(definitions.MY_FOLDER, self.fuzzer.out_file()))
-        if os.path.exists(os.path.join(definitions.THEIR_FOLDER, self.fuzzer.out_file())):
-            os.remove(os.path.join(definitions.THEIR_FOLDER, self.fuzzer.out_file()))
-        if os.path.exists(os.path.join(definitions.MY_FOLDER, self.test_output)):
-            os.remove(os.path.join(definitions.MY_FOLDER, self.test_output))
-        if os.path.exists(os.path.join(definitions.THEIR_FOLDER, self.test_output)):
-            os.remove(os.path.join(definitions.THEIR_FOLDER, self.test_output))
-
-    def check_result(self, result):
-        """Check the result of the program execution."""
-        if result.returncode != 0:
-            print("Exception! @ " + self.fuzzer.log())
-            except_type = str(result.stderr).split(":")[0][2:]
-            print("Type: {}".format(except_type))
-            raise Exception()
-
-    def compare_output(self):
+    def run_test(self, my_result, their_result):
         """Compares the output of the generated files and updates the result field accordingly."""
-        if filecmp.cmp(os.path.join(definitions.MY_FOLDER, self.test_output),
-                       os.path.join(definitions.THEIR_FOLDER, self.test_output),
+        res = False        
+        if my_result and their_result and filecmp.cmp(os.path.join(MY_FOLDER, self.test_output),
+                       os.path.join(THEIR_FOLDER, self.test_output),
                        shallow=False):
-            self.result = True
-        else:
-            my_result = open(os.path.join(definitions.MY_FOLDER, self.test_output), "r")
-            their_result = open(os.path.join(definitions.THEIR_FOLDER, self.test_output), "r")
-            diff = difflib.unified_diff(my_result.readlines(), their_result.readlines())
-            diff_file = open(definitions.DIFF_FILE_NAME, "w")
-            for line in diff:
-                diff_file.write(line)
-
-    def success(self):
-        """Returns whether the test succeeded (generated files were identical)."""
-        return self.result
+            res = True
+        return res
