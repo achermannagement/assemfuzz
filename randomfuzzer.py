@@ -30,9 +30,16 @@ The output then can be fed into the fuzzed program to find problems."""
     def __init__(self, file_name, lang_spec):
         super().__init__(file_name, lang_spec)
         self.length = hack.MAX_SIZE
-        self.contents = []     
 
     def prepare_file(self):
         for _ in range(self.length):
             self.contents.append(self.lang_spec.make_random_instruction())
         self.contents = "\n".join(self.contents)
+
+    def log(self):
+        return "RandomFuzzer file: {} length: {}".format(self.file,
+                                                         self.length)
+
+    def write_file(self):
+        self.file = open(self.file_name, "wb")
+        self.file.write(self.contents.encode("utf-8"))

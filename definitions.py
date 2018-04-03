@@ -20,9 +20,6 @@ Copyright (C) 2017  Joshua Achermann
 
   email: joshua.achermann@gmail.com
 """
-
-import os
-
 MY_FOLDER = "mine"
 THEIR_FOLDER = "theirs"
 

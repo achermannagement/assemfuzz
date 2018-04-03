@@ -36,13 +36,14 @@ runs the fuzzed program against the reference program and compares the results.
 It also does cleanup."""
 
     def prepare_fuzzer(self):
-        return randomfuzzer.RandomFuzzer(self.test_input, self.lang_spec)        
+        return randomfuzzer.RandomFuzzer(self.test_input, self.lang_spec)
 
     def run_test(self, my_result, their_result):
         """Compares the output of the generated files and updates the result field accordingly."""
-        res = False        
-        if my_result and their_result and filecmp.cmp(os.path.join(MY_FOLDER, self.test_output),
-                       os.path.join(THEIR_FOLDER, self.test_output),
-                       shallow=False):
+        res = False
+        if my_result and their_result and filecmp.cmp(
+                os.path.join(MY_FOLDER, self.test_output),
+                os.path.join(THEIR_FOLDER, self.test_output),
+                shallow=False):
             res = True
         return res

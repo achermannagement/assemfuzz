@@ -22,9 +22,11 @@ email: joshua.achermann@gmail.com
 #!/bin/python3
 
 import os
+import sys
 import argparse
 import subprocess
 import multiprocessing as mp
+import traceback
 
 import hack
 from definitions import (MY_FOLDER, THEIR_FOLDER, DEFAULT_ERR_LOG,
@@ -37,11 +39,12 @@ RUN_STRING = "java -cp {} {} {}"
 COMP_RUN_STRING_WINDOWS = "{} {}"
 COMP_RUN_STRING_LINUX = "{} {}"
 
-# these specify the extraction of fail line number
 def my_cond(err):
+    """extract error line from my error message"""
     return int(err.split()[4][:-1])
 
 def their_cond(err):
+    """extract error line from reference assembler error message"""
     return int(err.split()[2][:-1])
 
 # these specify the running of the programs
@@ -71,38 +74,30 @@ def their_assembler(input_path, windows=False):
                                 stderr=subprocess.PIPE, shell=True)
     return result
 
-def fuzz(queue, i, j, fail_test, errlog, log_lock, on_windows, talking_stick=None):
+def fuzz(queue, name, fail_test, log_tuple, on_windows):
     """This is the function that is passed to worker processes."""
     try:
         lang_spec = hack.Hack()
-        if talking_stick != None:
-            if not fail_test:
-                handler_inst = comparehandler.CompareHandler(PATH_TO_FUZZ_OUTPUT.format(j, i),
-                                                             PATH_TO_TEST_FILE.format(j, i),
-                                                             lang_spec,
-                                                             my_assembler, their_assembler, errlog,
-                                                             log_lock, on_windows, talking_stick)
-            else:
-                handler_inst = failhandler.FailHandler(PATH_TO_FUZZ_OUTPUT.format(j, i),
-                                                       PATH_TO_TEST_FILE.format(j, i),
-                                                       lang_spec, my_assembler, their_assembler,
-                                                       errlog, log_lock, my_cond, their_cond, on_windows, talking_stick)
+        (i, j) = name
+        programs = (my_assembler, their_assembler)
+        conds = (my_cond, their_cond)
+        data = {"programs":programs, "conds":conds,
+                "log_tuple":log_tuple, "on_windows":on_windows}
+        if not fail_test:
+            handler_inst = comparehandler.CompareHandler(
+                PATH_TO_FUZZ_OUTPUT.format(j, i),
+                PATH_TO_TEST_FILE.format(j, i),
+                lang_spec, data)
         else:
-            if not fail_test:
-                handler_inst = comparehandler.CompareHandler(PATH_TO_FUZZ_OUTPUT.format(j, i),
-                                                             PATH_TO_TEST_FILE.format(j, i),
-                                                             lang_spec,
-                                                             my_assembler, their_assembler, errlog,
-                                                             log_lock, on_windows)
-            else:
-                handler_inst = failhandler.FailHandler(PATH_TO_FUZZ_OUTPUT.format(j, i),
-                                                       PATH_TO_TEST_FILE.format(j, i),
-                                                       lang_spec, my_assembler, their_assembler,
-                                                       errlog, log_lock, my_cond, their_cond, on_windows)
+            handler_inst = failhandler.FailHandler(
+                PATH_TO_FUZZ_OUTPUT.format(j, i),
+                PATH_TO_TEST_FILE.format(j, i),
+                lang_spec, data)
         handler_inst.handle()
         queue.put(handler_inst.check_success())
-    except Exception as e:
-        print(e)
+    except Exception as exc:
+        print(exc)
+        traceback.print_tb(sys.exc_info()[2])
         queue.put(False)
 
 def specify_args():
@@ -125,39 +120,42 @@ def specify_args():
                                 , defaults to 1""")
     return parser.parse_args()
 
-def perform(tests, cores, errlog, halt_fail_count, fail_test, verbose, on_windows):
-    """Perform the fuzzing with the given options"""    
+def perform(args, on_windows):
+    """Perform the fuzzing with the given options"""
     passed = True
     fail_count = 0
-
-    for i in range(tests // cores):
+    for i in range(args.tests // args.cores):
         results = mp.Queue() # pool to collect results
         log_lock = mp.Lock()
-        if verbose:
+        if args.verbose:
             talking_stick = mp.Lock()
         else:
             talking_stick = None
-        processes = [mp.Process(target=fuzz,
-                                args=(results, i, x, fail_test, errlog, log_lock, on_windows, talking_stick))
-                     for x in range(cores)]
+        log_tuple = (args.errlog, log_lock, talking_stick)
+        processes = [mp.Process(
+            target=fuzz,
+            args=(
+                results, (i, x), args.fail, log_tuple,
+                on_windows))
+                     for x in range(args.cores)]
 
-        if verbose:
+        if args.verbose:
             print("Running test set {}".format(i))
 
         # start a process for each core
-        for j in range(cores):
+        for j in range(args.cores):
             processes[j].start()
 
         # join all completed tasks
-        for j in range(cores):
+        for j in range(args.cores):
             processes[j].join()
 
         # pool the results into an array of bools
         results = [results.get() for p in processes]
         fail_count += results.count(False)
 
-        if halt_fail_count <= fail_count:
-            if verbose:
+        if args.halt_fail_count <= fail_count:
+            if args.verbose:
                 print("Halt fail count exceeded, halting testing")
             break
 
@@ -180,31 +178,22 @@ def main():
     else:
 
         if not args.tests:
-            tests = 1
-        else:
-            tests = args.tests
+            args.tests = 1
 
         if not args.cores:
-            cores = 1
-        else:
-            cores = args.cores
+            args.cores = 1
 
         if not args.errlog:
-            errlog = DEFAULT_ERR_LOG
-        else:
-            errlog = args.errlog
+            args.errlog = DEFAULT_ERR_LOG
 
         if not args.halt_on_fail_count:
-            halt_fail_count = 1
-        else:
-            halt_fail_count = args.halt_on_fail_count
+            args.halt_fail_count = 1
 
-        fail_test = args.fail
-        verbose = args.verbose
-
-        if verbose:
-            print("{} tests over {} cores, errors logged @ {}, halt on {} failed tests".format(tests, cores, errlog, halt_fail_count))
-            if fail_test:
+        if args.verbose:
+            print("{} tests over {} cores, errors logged @ {},"
+                  " halt on {} failed tests".format(args.tests, args.cores,
+                                                    args.errlog, args.halt_fail_count))
+            if args.fail:
                 print("These tests will be run with invalid code")
 
         # detect whether the platform I am running on is Windows
@@ -212,7 +201,7 @@ def main():
         if os.name == 'nt':
             on_windows = True
 
-        perform(tests, cores, errlog, halt_fail_count, fail_test, verbose, on_windows)
+        perform(args, on_windows)
 
 if __name__ == "__main__":
     main()

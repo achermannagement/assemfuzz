@@ -22,12 +22,7 @@ Copyright (C) 2017  Joshua Achermann
 
   email: joshua.achermann@gmail.com
 """
-import os
-import shutil
-
-import definitions
-
-from handler import Handler
+from handler import Handler, program_had_error
 import randombadfuzzer
 
 class FailHandler(Handler):
@@ -35,20 +30,11 @@ class FailHandler(Handler):
 runs the fuzzed program against the reference program and compares the results.
 It also does cleanup."""
 
-    def __init__(self, test_input, test_output, lang_spec,
-                 program, ref_program, errlog, log_lock, windows=False, talking_stick=None):
-        super().__init__(test_input, test_output, lang_spec,
-                 program, ref_program, errlog, log_lock, windows, talking_stick)
-        self.my_cond = None
-        self.their_cond = None
-
-    def __init__(self, test_input, test_output, lang_spec,
-                 program, ref_program, errlog, log_lock,
-                 my_cond, their_cond, windows=False, talking_stick=None):
-        super().__init__(test_input, test_output, lang_spec,
-                 program, ref_program, errlog, log_lock, windows, talking_stick)
-        self.my_cond = my_cond
-        self.their_cond = their_cond
+    def __init__(self, test_input, test_output, lang_spec, data):
+        super().__init__(
+            test_input, test_output, lang_spec, data)
+        self.my_cond = data["conds"][0]
+        self.their_cond = data["conds"][1]
 
     def prepare_fuzzer(self):
         return randombadfuzzer.RandomBadFuzzer(self.test_input, self.lang_spec)
@@ -60,6 +46,5 @@ It also does cleanup."""
         if self.my_cond and self.their_cond:
             res = self.my_cond(my_result.stderr) == self.their_cond(their_result.stderr)
         else:
-            res = self.program_had_error(my_result) and self.program_had_error(their_result)
+            res = program_had_error(my_result) and program_had_error(their_result)
         return res
-

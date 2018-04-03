@@ -20,9 +20,10 @@ Copyright (C) 2017  Joshua Achermann
 
   email: joshua.achermann@gmail.com
 """
-from langspec import LangSpec
 import random
 import string
+
+from langspec import LangSpec
 
 # hack has 15 bit pointers pointing to program memory
 MAX_SIZE = 2**15
@@ -95,6 +96,7 @@ class Hack(LangSpec):
     """This is a language specification wrapper class for the Hack assembly language."""
 
     def __init__(self):
+        super().__init__()
         self.variables = []
         self.labels = []
 

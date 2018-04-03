@@ -21,9 +21,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 email: joshua.achermann@gmail.com
 """
+import random
+
 from fuzzer import Fuzzer
 import hack
-import random
 
 class RandomBadFuzzer(Fuzzer):
     """This fuzzer prepares a valid code for the language spec provided.
@@ -33,10 +34,17 @@ The output then can be fed into the fuzzed program to find problems."""
         super().__init__(file_name, lang_spec)
         self.length = hack.MAX_SIZE
         self.contents = []
+        self.bad_line = random.randint(0, len(self.contents))
 
     def prepare_file(self):
         for _ in range(self.length):
             self.contents.append(self.lang_spec.make_random_instruction())
-        self.bad_line = random.randint(0, len(self.contents))
         self.contents[self.bad_line] = self.lang_spec.make_invalid_instruction()
         self.contents = "\n".join(self.contents)
+
+    def log(self):
+        return "RandomBadFuzzer file: {} length: {}".format(self.file,
+                                                            self.length)
+    def write_file(self):
+        self.file = open(self.file_name, "wb")
+        self.file.write(self.contents.encode("utf-8"))
