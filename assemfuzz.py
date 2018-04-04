@@ -29,30 +29,19 @@ import multiprocessing as mp
 import traceback
 
 import hack
-from definitions import (MY_FOLDER, THEIR_FOLDER, DEFAULT_ERR_LOG,
+from definitions import (THEIR_FOLDER, DEFAULT_ERR_LOG,
                          PATH_TO_TEST_FILE, PATH_TO_FUZZ_OUTPUT)
+from myprogram import my_assembler, my_cond
 import comparehandler
 import failhandler
 
 PATH_TO_ASSEMBLER = "Assembler"
-RUN_STRING = "java -cp {} {} {}"
 COMP_RUN_STRING_WINDOWS = "{} {}"
 COMP_RUN_STRING_LINUX = "{} {}"
-
-def my_cond(err):
-    """extract error line from my error message"""
-    return int(err.split()[4][:-1])
 
 def their_cond(err):
     """extract error line from reference assembler error message"""
     return int(err.split()[2][:-1])
-
-# these specify the running of the programs
-def my_assembler(input_path):
-    """This is the function we pass into the handler to run our program"""
-    return subprocess.run(RUN_STRING.format(MY_FOLDER, PATH_TO_ASSEMBLER, input_path),
-                          stdout=subprocess.PIPE,
-                          stderr=subprocess.PIPE, shell=True)
 
 def their_assembler(input_path, windows=False):
     """This is the function to run the Nand2Tetris reference assembler"""
