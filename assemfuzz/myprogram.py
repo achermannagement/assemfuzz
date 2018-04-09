@@ -22,7 +22,7 @@ email: joshua.achermann@gmail.com
 
 import subprocess
 
-from definitions import MY_FOLDER
+from assemfuzz.definitions import MY_FOLDER
 
 PATH_TO_ASSEMBLER = "Assembler"
 RUN_STRING = "java -cp {} {} {}"
@@ -31,9 +31,12 @@ def my_cond(err):
     """extract error line from my error message"""
     return int(err.split()[4][:-1])
 
+# TODO fix this
 # these specify the running of the programs
 def my_assembler(input_path):
     """This is the function we pass into the handler to run our program"""
+    if not program_had_error(my_result):
+            os.rename(self.test_output, os.path.join(MY_FOLDER, self.test_output))
     return subprocess.run(RUN_STRING.format(MY_FOLDER, PATH_TO_ASSEMBLER, input_path),
                           stdout=subprocess.PIPE,
                           stderr=subprocess.PIPE, shell=True)

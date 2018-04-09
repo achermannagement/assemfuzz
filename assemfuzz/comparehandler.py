@@ -1,7 +1,7 @@
 """
 handles the fuzzer and programs to be fuzzed
-this handler is designed to input a known bad input and tests the program
-fails gracefully with a helpful message
+this handler is designed to fuzz the program with known valid inputs and compare
+the generated output to a reference program
 
 Copyright (C) 2017  Joshua Achermann
 
@@ -22,29 +22,28 @@ Copyright (C) 2017  Joshua Achermann
 
   email: joshua.achermann@gmail.com
 """
-from handler import Handler, program_had_error
-import randombadfuzzer
+import os
+import filecmp
 
-class FailHandler(Handler):
+from assemfuzz.definitions import MY_FOLDER, THEIR_FOLDER
+
+from assemfuzz.handler import Handler
+import assemfuzz.randomfuzzer as randomfuzzer
+
+class CompareHandler(Handler):
     """The handler takes in the fuzzer and uses it to generate the input files,
 runs the fuzzed program against the reference program and compares the results.
 It also does cleanup."""
 
-    def __init__(self, test_input, test_output, lang_spec, data):
-        super().__init__(
-            test_input, test_output, lang_spec, data)
-        self.my_cond = data["conds"][0]
-        self.their_cond = data["conds"][1]
-
     def prepare_fuzzer(self):
-        return randombadfuzzer.RandomBadFuzzer(self.test_input, self.lang_spec)
+        return randomfuzzer.RandomFuzzer(self.test_input, self.lang_spec)
 
     def run_test(self, my_result, their_result):
+        """Compares the output of the generated files and updates the result field accordingly."""
         res = False
-        self.talk("My error message: {}".format(my_result.stderr))
-        self.talk("Their error message: {}".format(their_result.stderr))
-        if self.my_cond and self.their_cond:
-            res = self.my_cond(my_result.stderr) == self.their_cond(their_result.stderr)
-        else:
-            res = program_had_error(my_result) and program_had_error(their_result)
+        if my_result and their_result and filecmp.cmp(
+                os.path.join(MY_FOLDER, self.test_output),
+                os.path.join(THEIR_FOLDER, self.test_output),
+                shallow=False):
+            res = True
         return res

@@ -20,8 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 email: joshua.achermann@gmail.com
 """
-from fuzzer import Fuzzer
-import hack
+from assemfuzz.fuzzer import Fuzzer
+import assemfuzz.hack as hack
 
 class RandomFuzzer(Fuzzer):
     """This fuzzer prepares a valid code for the language spec provided.

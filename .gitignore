@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+.pytest_cache
 
 .coverage
 htmlcov/
@@ -11,5 +12,6 @@ htmlcov/
 
 mine/
 theirs/
+mine-original/
 
 err.log

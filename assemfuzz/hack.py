@@ -23,7 +23,7 @@ Copyright (C) 2017  Joshua Achermann
 import random
 import string
 
-from langspec import LangSpec
+from assemfuzz.langspec import LangSpec
 
 # hack has 15 bit pointers pointing to program memory
 MAX_SIZE = 2**15

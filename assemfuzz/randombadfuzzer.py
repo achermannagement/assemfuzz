@@ -23,8 +23,8 @@ email: joshua.achermann@gmail.com
 """
 import random
 
-from fuzzer import Fuzzer
-import hack
+from assemfuzz.fuzzer import Fuzzer
+import assemfuzz.hack as hack
 
 class RandomBadFuzzer(Fuzzer):
     """This fuzzer prepares a valid code for the language spec provided.

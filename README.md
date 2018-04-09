@@ -46,18 +46,25 @@ chmod +x mine/Assembler.sh
 chmod +x theirs/Assembler.sh
 ```
 
-Update the RUN_STRING in definitions.py
+Update the RUN_STRING in myprogram.py
 ```
 RUN_STRING = "{}/{}.sh {}".format(MY_FOLDER, PATH_TO_ASSEMBLER, PATH_TO_TEST_FILE)
+```
+
+You should also update the my_cond function in myprogram.py so it extracts the line number from your error messages.
+```
+return int(err.split()[4][:-1])
 ```
 
 Run the program
 
 ```
-python3 assem-fuzz.py
+python3 assemfuzz.py
 Test passed
 All tests passed? True
 ```
+
+### Configuration
 
 ## Running the tests
 
@@ -79,11 +86,15 @@ Explain what these tests test and why
 Give an example
 ```
 
+## TODO
+See TODO.md
+
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [pytest](https://docs.pytest.org/en/latest/) - Testing framework
+* [setuptools](https://setuptools.readthedocs.io/en/latest/) - Packaging framework
+* [pytest-cov]() - pytest coverage testing
+* [pytest-pylint]() - pytest pylint testing
 
 ## Authors
 
@@ -97,6 +108,7 @@ This project is licensed under the GPL License - see the LICENSE file for detail
 
 ## Acknowledgments
 
+* Jeff Knupp's Open Sourcing a Python Project the Right Way
 * Hat tip to anyone who's code was used
 * Inspiration
 * etc

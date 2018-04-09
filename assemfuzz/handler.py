@@ -24,7 +24,7 @@ from abc import ABC, abstractmethod
 import os
 import shutil
 
-from definitions import MY_FOLDER, THEIR_FOLDER
+from assemfuzz.definitions import MY_FOLDER, THEIR_FOLDER
 
 def program_had_error(result):
     """Helper function to detect errors"""
@@ -61,9 +61,6 @@ class Handler(ABC):
                     os.path.join(THEIR_FOLDER, self.test_input))
 
         my_result = self.program_under_test()
-        if not program_had_error(my_result):
-            os.rename(self.test_output, os.path.join(MY_FOLDER, self.test_output))
-
         their_result = self.reference_program()
 
         #os.rename(self.test_output, os.path.join(THEIR_FOLDER, self.test_output))
