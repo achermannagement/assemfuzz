@@ -1,5 +1,12 @@
 __pycache__/
 *.pyc
+bin/
+lib64
+
+.eggs/
+assemfuzz.egg-info/
+pyvenv.cfg
+
 .pytest_cache
 
 .coverage
