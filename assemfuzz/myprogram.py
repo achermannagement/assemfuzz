@@ -20,6 +20,7 @@ email: joshua.achermann@gmail.com
 """
 #!/bin/python3
 
+import os
 import subprocess
 
 from assemfuzz.definitions import MY_FOLDER
@@ -31,12 +32,17 @@ def my_cond(err):
     """extract error line from my error message"""
     return int(err.split()[4][:-1])
 
+def convert_name(name):
+    return "{}.hack".format(name[:-4])
+
 # TODO fix this
 # these specify the running of the programs
-def my_assembler(input_path):
+def my_assembler(input_path, on_windows=False):
     """This is the function we pass into the handler to run our program"""
-    if not program_had_error(my_result):
-            os.rename(self.test_output, os.path.join(MY_FOLDER, self.test_output))
-    return subprocess.run(RUN_STRING.format(MY_FOLDER, PATH_TO_ASSEMBLER, input_path),
-                          stdout=subprocess.PIPE,
-                          stderr=subprocess.PIPE, shell=True)
+    test_output = convert_name(input_path)
+    result = subprocess.run(RUN_STRING.format(MY_FOLDER, PATH_TO_ASSEMBLER, input_path),
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE, shell=True)
+    if result.returncode == 0:
+        os.rename(test_output, os.path.join(MY_FOLDER, test_output)) # never sure I need this?
+    return result

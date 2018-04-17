@@ -97,7 +97,7 @@ class Handler(ABC):
 
     def program_under_test(self):
         """Runs the program function for the program under test"""
-        return self.data["programs"][0](self.test_input)
+        return self.data["programs"][0](self.test_input, self.data["on_windows"])
 
     def reference_program(self):
         """Runs the program function for the reference program"""

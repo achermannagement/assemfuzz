@@ -29,8 +29,8 @@ import multiprocessing as mp
 import traceback
 
 import assemfuzz.hack as hack
-from assemfuzz.definitions import (THEIR_FOLDER, DEFAULT_ERR_LOG,
-                         PATH_TO_TEST_FILE, PATH_TO_FUZZ_OUTPUT)
+from assemfuzz.definitions import (
+    THEIR_FOLDER, DEFAULT_ERR_LOG, PATH_TO_TEST_FILE, PATH_TO_FUZZ_OUTPUT)
 from assemfuzz.myprogram import my_assembler, my_cond
 import assemfuzz.comparehandler as comparehandler
 import assemfuzz.failhandler as failhandler
@@ -113,7 +113,6 @@ def perform(args, on_windows):
     """Perform the fuzzing with the given options"""
     passed = True
     fail_count = 0
-    os.chdir('..') # go up a directory to the testbench
     for i in range(args.tests // args.cores):
         results = mp.Queue() # pool to collect results
         log_lock = mp.Lock()

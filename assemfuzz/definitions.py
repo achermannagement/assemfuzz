@@ -20,6 +20,10 @@ Copyright (C) 2017  Joshua Achermann
 
   email: joshua.achermann@gmail.com
 """
+import os
+
+import assemfuzz.__init__ as __init__
+
 MY_FOLDER = "mine"
 THEIR_FOLDER = "theirs"
 
