@@ -26,7 +26,8 @@ import sys
 import subprocess
 
 import assemfuzz.hack as hack
-from assemfuzz.definitions import (MY_FOLDER, THEIR_FOLDER, DEFAULT_ERR_LOG,
+from assemfuzz.definitions import MY_FOLDER, THEIR_FOLDER
+from assemfuzz.definitions import (DEFAULT_ERR_LOG,
                          PATH_TO_TEST_FILE, PATH_TO_FUZZ_OUTPUT)
 import assemfuzz.comparehandler as comparehandler
 import assemfuzz.failhandler as failhandler
@@ -81,7 +82,7 @@ def fuzz(fail_test, on_windows):
 
 def perform(on_windows):
     """Perform the fuzzing with the given options"""
-    fail = False
+    fail = True
     fuzz(fail, on_windows)
 
 def test_fuzz():
