@@ -8,6 +8,7 @@ assemfuzz.egg-info/
 pyvenv.cfg
 
 .pytest_cache
+.tox/
 
 .coverage
 htmlcov/
