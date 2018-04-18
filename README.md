@@ -13,21 +13,31 @@ This is a project to make a fuzzing platform for the Hack assembly language from
 Download the Nand2Tetris Software Suite to grab the reference assembler.
 
 ### Prerequisites
+Python 3.6: (http://python.org)
+
 Nand2Tetris Software Suite: (http://nand2tetris.org/software.php)
 
 ### Installing
+(Ideally, you will want to install this into a virtual Python environment with [venv](https://docs.python.org/3/library/venv.html))
+
 Download the Nand2Tetris software suite (this guide assumes it is in the ~/Downloads directory).
 
 Clone the repo.
 
     git clone https://github.com/achermannagement/assemfuzz.git
 
+Download the prerequisite python packages.
+
+    pip install -rrequirements.txt
+
 Use the setup script.
+
+    python setup.py install
 
 ### Fuzzing Your Assembler
 Run
 
-    python3 setup.py prepare --path ~/Downloads/nand2tetris.zip
+    python setup.py prepare --path ~/Downloads/nand2tetris.zip
 
 to in order to make the testing directories.
 
@@ -39,13 +49,13 @@ You should also update the `my_cond` function in myprogram.py so it extracts the
 
 Run the program
 
-    python3 assemfuzz.py
+    python assemfuzz.py
 
 If your assembler produces the same output as the reference assembler for the fuzzed file, you will get a message saying tests passed.
 
 This only runs a single assembly file against your assembler though so you might want to run more to have more confidence in your assembler, run
 
-    python3 assemfuzz.py -n 1000
+    python assemfuzz.py -n 1000
 
 to have a thousand passes done.
 
@@ -61,25 +71,25 @@ PyTest and Tox are used to run tests in the setup file.
 
 First run the prepare command to extract the software suite.
 
-    python3 setup.py prepare --path nand2tetris.zip --test 1
+    python setup.py prepare --path ~/Downloads/nand2tetris.zip --test 1
 
 Run the tests with the path to software suite as an argument.
 
-    tox
+    python -m tox
 
 You can also run pytest directly.
 
-    python3 -m pytest
+    python -m pytest
 
 ### Coverage
 An argument can be provided in the setup script to enable coverage testing.
 
-    python3 -m pytest --cov
+    python -m pytest --cov
 
 ### Pylint
 Pylint is used to measure code quality in this project. You can run it with
 
-    python3 -m pytest --pylint
+    python -m pytest --pylint
 
 ## TODO
 See TODO.md
@@ -89,6 +99,7 @@ assemfuzz is not envisioned to become a large project but if you are keen to hel
 
 ## Built With
 
+* [tox](https://tox.readthedocs.io/en/latest/) - Testing automation
 * [pytest](https://docs.pytest.org/en/latest/) - Testing framework
 * [setuptools](https://setuptools.readthedocs.io/en/latest/) - Packaging framework
 * [pytest-cov](https://pypi.org/project/pytest-cov/) - pytest coverage testing
@@ -107,5 +118,6 @@ This project is licensed under the GPL License - see the LICENSE file for detail
 ## Acknowledgments
 * [Noam Nisan & Shimon Schocken's Nand2Tetris Course and Book](http://nand2tetris.org/)
 * [Jeff Knupp's Open Sourcing a Python Project the Right Way](https://jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/)
+* [ionel's Packaging a python library](https://blog.ionelmc.ro/2014/05/25/python-packaging/)
 * [PurpleBooth's README-Template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
 * [yebblies for inspiration](https://github.com/yebblies)

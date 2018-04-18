@@ -2,8 +2,8 @@
 branch = True
 concurrency = "multiprocessing"
 omit=
-    lib64/*
-    lib/*
+    *lib64*
+    *lib/*
     mine/*
     .tox/*
     .eggs/*
@@ -12,4 +12,3 @@ omit=
     *.local/*
 
 [report]
-

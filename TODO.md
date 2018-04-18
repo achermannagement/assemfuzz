@@ -1,9 +1,17 @@
 # assemfuzz TODO
 
+## Project
++ Fix lint issues
++ Improved git development flow
++ Upload package to PyPi
+
+## Performance
++ Multiprocessing may be implemented in a more performant way
+
 ## Features
 
 ### Setup
-+ As the Nand2Tetris software suite is also under the GPL I should be able to have the setup script grab the zipfile as part of setup without licensing issue
++ As the Nand2Tetris software suite is also under the GPL, I should be able to have the setup script grab the zipfile as part of setup without licensing issue
 
 ### Application
 + More helpful error messages
@@ -13,15 +21,15 @@
 + More robust Hack assembly comment generation
 
 ## Testing
-+ Replace pytest-runner with tox
-+ Using continous integration (like TravisCI)
++ Use continous integration (like TravisCI)
 + Add failure testing for both Compare and Fail handlers
++ Tests invoking \_\_main\_\_.py directly
 
 ## Documentation
-+ Using a document generator (like Sphinx)
++ Use a document generator (like Sphinx)
 
 ## Optional
 + Hack assembly state exhaustion (testing every possible line of Hack assembly sequentially)
 
-## OTHER
+## Other
 + I hope to extend this fuzzing platform to include more of Nand2Tetris stack
