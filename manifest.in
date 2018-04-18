@@ -1,0 +1,4 @@
+include README.md
+include TODO.md
+include LICENSE
+include nand2tetris.zip
