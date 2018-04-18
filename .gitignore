@@ -3,6 +3,9 @@ __pycache__/
 bin/
 lib64
 
+build/
+dist/
+
 .eggs/
 assemfuzz.egg-info/
 pyvenv.cfg
