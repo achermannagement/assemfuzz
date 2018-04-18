@@ -25,6 +25,7 @@ Download the Nand2Tetris software suite (this guide assumes it is in the ~/Downl
 Clone the repo.
 
     git clone https://github.com/achermannagement/assemfuzz.git
+    cd assemfuzz
 
 Download the prerequisite python packages.
 
