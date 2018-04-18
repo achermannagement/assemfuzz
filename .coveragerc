@@ -1,0 +1,15 @@
+[run]
+branch = True
+concurrency = "multiprocessing"
+omit=
+    lib64/*
+    lib/*
+    mine/*
+    .tox/*
+    .eggs/*
+    __pycache__/*
+    include/*
+    *.local/*
+
+[report]
+
