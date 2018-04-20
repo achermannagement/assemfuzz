@@ -20,10 +20,6 @@ Copyright (C) 2017  Joshua Achermann
 
   email: joshua.achermann@gmail.com
 """
-import os
-
-import assemfuzz.__init__ as __init__
-
 MY_FOLDER = "mine"
 THEIR_FOLDER = "theirs"
 
@@ -31,5 +27,9 @@ FILE_TITLE = "fuzz"
 PATH_TO_TEST_FILE = FILE_TITLE + "_{}_{}.hack"
 PATH_TO_FUZZ_OUTPUT = FILE_TITLE + "_{}_{}.asm"
 DIFF_FILE_NAME = "diff"
+
+PATH_TO_ASSEMBLER = "Assembler"
+COMP_RUN_STRING_WINDOWS = "{} {}"
+COMP_RUN_STRING_LINUX = "{} {}"
 
 DEFAULT_ERR_LOG = "err.log"

@@ -1,15 +1,57 @@
+"""
+helpful functions that help setup
+
+Copyright (C) 2017  Joshua Achermann
+
+assem-fuzz is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+email: joshua.achermann@gmail.com
+"""
 import os
 import pathlib
 import glob
 import shutil
 import zipfile
 import stat
+import subprocess
 
-import assemfuzz.definitions
+from assemfuzz.definitions import (
+    MY_FOLDER, THEIR_FOLDER, PATH_TO_ASSEMBLER,
+    COMP_RUN_STRING_LINUX)
 
 ZIP_PATH = 'nand2tetris.zip'
-MY_FOLDER = assemfuzz.definitions.MY_FOLDER
-THEIR_FOLDER = assemfuzz.definitions.THEIR_FOLDER
+
+def their_cond(err):
+    """extract error line from reference assembler error message"""
+    return int(err.split()[2][:-1])
+
+def their_assembler(input_path, windows=False):
+    return run(THEIR_FOLDER, input_path, windows)
+
+def run(folder, input_path, windows):
+    """Run the reference assembler in given folder on given file"""
+    if not windows:
+        ext = ".sh"
+    else:
+        ext = ".bat"
+    run_string = os.path.join(
+        folder, PATH_TO_ASSEMBLER + ext)
+    result = subprocess.run(
+        COMP_RUN_STRING_LINUX.format(
+            run_string, os.path.join(folder, input_path)),
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    return result
 
 def make_folders():
     """Make the empty testbench"""
@@ -23,9 +65,11 @@ def prepare_tests(path):
     extract_toolchain(path, THEIR_FOLDER)
 
 def extract_my_toolchain(tool_chain):
+    """Extract given zipfile to mine/ folder"""
     extract_toolchain(tool_chain, MY_FOLDER)
 
 def extract_their_toolchain(tool_chain):
+    """Extract given zipfile to their/ folder"""
     extract_toolchain(tool_chain, THEIR_FOLDER)
 
 def extract_toolchain(tool_chain, folder):
@@ -42,8 +86,8 @@ def extract_toolchain(tool_chain, folder):
             for root, _, files in os.walk(dest_dir):
                 for curr in files:
                     curr = os.path.join(root, curr)
-                    st = os.stat(curr)
-                    os.chmod(curr, st.st_mode | stat.S_IEXEC)
+                    st_prev = os.stat(curr)
+                    os.chmod(curr, st_prev.st_mode | stat.S_IEXEC)
 
 def clean_testbench():
     """Clean the testbench"""

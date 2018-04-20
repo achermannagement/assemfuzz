@@ -34,34 +34,7 @@ from assemfuzz.definitions import (
 from assemfuzz.myprogram import my_assembler, my_cond
 import assemfuzz.comparehandler as comparehandler
 import assemfuzz.failhandler as failhandler
-
-PATH_TO_ASSEMBLER = "Assembler"
-COMP_RUN_STRING_WINDOWS = "{} {}"
-COMP_RUN_STRING_LINUX = "{} {}"
-
-def their_cond(err):
-    """extract error line from reference assembler error message"""
-    return int(err.split()[2][:-1])
-
-def their_assembler(input_path, windows=False):
-    """This is the function to run the Nand2Tetris reference assembler"""
-    if not windows:
-        result = subprocess.run(COMP_RUN_STRING_LINUX.format(os.path.join(THEIR_FOLDER,
-                                                                          PATH_TO_ASSEMBLER +
-                                                                          ".sh"),
-                                                             os.path.join(THEIR_FOLDER,
-                                                                          input_path)),
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE, shell=True)
-    else:
-        result = subprocess.run(COMP_RUN_STRING_WINDOWS.format(os.path.join(THEIR_FOLDER,
-                                                                            PATH_TO_ASSEMBLER +
-                                                                            ".bat"),
-                                                               os.path.join(THEIR_FOLDER,
-                                                                            input_path)),
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE, shell=True)
-    return result
+from assemfuzz.common import their_assembler, their_cond
 
 def fuzz(queue, name, fail_test, log_tuple, on_windows):
     """This is the function that is passed to worker processes."""
