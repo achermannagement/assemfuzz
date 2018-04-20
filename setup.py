@@ -33,6 +33,7 @@ with open(os.path.join(HERE, 'README.md')) as readme:
     LONG_DESCRIPTION = readme.read()
 
 class MyClean(clean):
+    """Extending the setup.py clean command"""
     def run(self):
         super().run()
         assemfuzz.common.clean_testbench()
@@ -45,9 +46,11 @@ class PrepareCommand(Command):
         ('test=', None, 'Prepare for testing'),
     ]
     def initialize_options(self):
+        """Set initial option values"""
         self.path = None
         self.test = False
     def finalize_options(self):
+        """Check final option values"""
         if self.path is None:
             print("Please provide a path")
             sys.exit(1)

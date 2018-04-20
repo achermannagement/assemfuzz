@@ -1,5 +1,5 @@
 """
-
+Wrapper module for running your assembler
 
 Copyright (C) 2017  Joshua Achermann
 
@@ -29,20 +29,20 @@ PATH_TO_ASSEMBLER = "Assembler"
 RUN_STRING = "java -cp {} {} {}"
 
 def my_cond(err):
-    """extract error line from my error message"""
+    """Extract error line from my error message, as an example my assembler returns the line number of the erroroneous line in the form <TODO>. I can extract the line number by taking the fifth element after splitting the string on whitespace and removing the comma from the end. Change this to return the line number from your message, alternatively return None to disable error line check."""
+    # TODO: finish this
     return int(err.split()[4][:-1])
 
 def convert_name(name):
+    """convert input path to output path"""
     return "{}.hack".format(name[:-4])
 
-# TODO fix this
-# these specify the running of the programs
 def my_assembler(input_path, on_windows=False):
-    """This is the function we pass into the handler to run our program"""
+    """This is the function we pass into the handler to run our program. You need to change this function so that RUN_STRING calls your assembler. If it is required, you can use the on_windows argument to determine whether your program is currently running on a Windows environment vs Unix."""
     test_output = convert_name(input_path)
     result = subprocess.run(RUN_STRING.format(MY_FOLDER, PATH_TO_ASSEMBLER, input_path),
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE, shell=True)
     if result.returncode == 0:
-        os.rename(test_output, os.path.join(MY_FOLDER, test_output)) # never sure I need this?
+        os.rename(test_output, os.path.join(MY_FOLDER, test_output))
     return result
