@@ -20,81 +20,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 email: joshua.achermann@gmail.com
 """
 #!/bin/python3
-
-import os
-import sys
-import subprocess
-
-import assemfuzz.hack as hack
-from assemfuzz.definitions import MY_FOLDER, THEIR_FOLDER
-from assemfuzz.definitions import (DEFAULT_ERR_LOG,
-                         PATH_TO_TEST_FILE, PATH_TO_FUZZ_OUTPUT)
-import assemfuzz.comparehandler as comparehandler
-import assemfuzz.failhandler as failhandler
-
-PATH_TO_ASSEMBLER = "Assembler"
-COMP_RUN_STRING_WINDOWS = "{} {}"
-COMP_RUN_STRING_LINUX = "{} {}"
-
-def their_cond(err):
-    """extract error line from reference assembler error message"""
-    return int(err.split()[2][:-1])
-
-def run(folder, input_path, windows):
-    if not windows:
-        ext = ".sh"
-    else:
-        ext = ".bat"
-
-    run_string = os.path.join(
-                folder, PATH_TO_ASSEMBLER + ext)
-
-    result = subprocess.run(
-        COMP_RUN_STRING_LINUX.format(run_string,
-        os.path.join(folder, input_path)),
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    return result
-
-def my_assembler(input_path, windows=False):
-    return run(MY_FOLDER, input_path, windows)
-
-def their_assembler(input_path, windows=False):
-    return run(THEIR_FOLDER, input_path, windows)
-
-def fuzz(fail_test, on_windows):
-    lang_spec = hack.Hack()
-    programs = (my_assembler, their_assembler)
-    conds = (their_cond, their_cond)
-    data = {"programs":programs, "conds":conds,
-            "log_tuple":(None,None,None), "on_windows":on_windows}
-    if not fail_test:
-        handler_inst = comparehandler.CompareHandler(
-            PATH_TO_FUZZ_OUTPUT.format(0, 0),
-            PATH_TO_TEST_FILE.format(0, 0),
-            lang_spec, data)
-    else:
-        handler_inst = failhandler.FailHandler(
-            PATH_TO_FUZZ_OUTPUT.format(0, 0),
-            PATH_TO_TEST_FILE.format(0, 0),
-            lang_spec, data)
-    handler_inst.handle()
-    assert handler_inst.check_success()
-
-def perform(on_windows):
-    """Perform the fuzzing with the given options"""
-    fail = False
-    fuzz(fail, on_windows)
+from common import on_win, fuzz
 
 def test_fuzz():
-    """Uses the default handler and random fuzzer to run multiple
-    fuzzing rounds on the assembler defined in defintions.py
-    """
-    # detect whether the platform I am running on is Windows
-    on_windows = False
-    if os.name == 'nt':
-        on_windows = True
-
-    perform(on_windows)
+    """Perform the fuzzing with the given options"""
+    on_windows = on_win()
+    fuzz(False, on_windows)
 
 if __name__ == "__main__":
     test_fuzz()
