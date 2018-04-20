@@ -36,6 +36,13 @@ import assemfuzz.comparehandler as comparehandler
 import assemfuzz.failhandler as failhandler
 from assemfuzz.common import their_assembler, their_cond
 
+def on_win():
+    # detect whether the platform I am running on is Windows
+    on_windows = False
+    if os.name == 'nt':
+        on_windows = True
+    return on_windows
+
 def fuzz(queue, name, fail_test, log_tuple, on_windows):
     """This is the function that is passed to worker processes."""
     try:
@@ -158,12 +165,7 @@ def main():
             if args.fail:
                 print("These tests will be run with invalid code")
 
-        # detect whether the platform I am running on is Windows
-        on_windows = False
-        if os.name == 'nt':
-            on_windows = True
-
-        perform(args, on_windows)
+        perform(args, on_win())
 
 if __name__ == "__main__":
     main()
