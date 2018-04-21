@@ -24,20 +24,19 @@ email: joshua.achermann@gmail.com
 import os
 import sys
 import argparse
-import subprocess
 import multiprocessing as mp
 import traceback
 
 import assemfuzz.hack as hack
 from assemfuzz.definitions import (
-    THEIR_FOLDER, DEFAULT_ERR_LOG, PATH_TO_TEST_FILE, PATH_TO_FUZZ_OUTPUT)
+    DEFAULT_ERR_LOG, PATH_TO_TEST_FILE, PATH_TO_FUZZ_OUTPUT)
 from assemfuzz.myprogram import my_assembler, my_cond
 import assemfuzz.comparehandler as comparehandler
 import assemfuzz.failhandler as failhandler
 from assemfuzz.common import their_assembler, their_cond
 
 def on_win():
-    # detect whether the platform I am running on is Windows
+    """Detect whether the platform I am running on is Windows"""
     on_windows = False
     if os.name == 'nt':
         on_windows = True
@@ -132,6 +131,9 @@ def perform(args, on_windows):
         passed = False
 
     print("PASSED ALL TESTS: " + str(passed))
+
+    if passed == False:
+        sys.exit(1)
 
 def main():
     """Uses the default handler and random fuzzer to run multiple
