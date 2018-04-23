@@ -19,21 +19,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 email: joshua.achermann@gmail.com
 """
 import os
-import subprocess
 
 import assemfuzz.hack as hack
 from assemfuzz.definitions import (
-    THEIR_FOLDER, THEIR_FOLDER2, DEFAULT_ERR_LOG,
+    THEIR_FOLDER, THEIR_FOLDER2,
     PATH_TO_TEST_FILE, PATH_TO_FUZZ_OUTPUT)
 import assemfuzz.comparehandler as comparehandler
 import assemfuzz.failhandler as failhandler
-import assemfuzz.definitions
 from assemfuzz.common import run, their_assembler, their_cond
 
 def my_assembler(input_path, windows=False):
+    """Function to run a second reference assembler for testing"""
     return run(THEIR_FOLDER2, input_path, windows)
 
 def fuzz(fail_test, on_windows):
+    """Reduced functionality from __main__ fuzz function for testing purposes"""
     lang_spec = hack.Hack()
     programs = (my_assembler, their_assembler)
     conds = (their_cond, their_cond)

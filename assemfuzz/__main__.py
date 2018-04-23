@@ -135,7 +135,7 @@ def perform(args, on_windows):
 
     print("PASSED ALL TESTS: " + str(passed))
 
-    if passed == False:
+    if passed is False:
         sys.exit(1)
 
 def main():

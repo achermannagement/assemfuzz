@@ -33,10 +33,11 @@ from assemfuzz.definitions import (
 ZIP_PATH = 'nand2tetris.zip'
 
 def their_cond(err):
-    """extract error line from reference assembler error message"""
+    """Extract error line from reference assembler error message"""
     return int(err.split()[2][:-1])
 
 def their_assembler(input_path, windows=False):
+    """Function passed to handler to run reference assembler"""
     return run(THEIR_FOLDER, input_path, windows)
 
 def run(folder, input_path, windows):

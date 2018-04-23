@@ -29,8 +29,15 @@ PATH_TO_ASSEMBLER = os.path.join("mine", "HackAssembler.jar")
 RUN_STRING = "java -jar {} {}"
 
 def my_cond(err):
-    """Extract error line from my error message, as an example my assembler returns the line number of the erroroneous line in the form <TODO>. I can extract the line number by taking the fifth element after splitting the string on whitespace and removing the comma from the end. Change this to return the line number from your message, alternatively return None to disable error line check."""
-    # TODO: finish this
+    """Extract error line from my error message, as an example my assembler
+ returns the line number of the erroroneous line in the form
+
+org.achermannagement.InvalidInstructionException: Invalid instruction at 1: HackAssembler
+
+ I can extract the line number by taking the fifth element after splitting the
+ string on whitespace and removing the colon from the end. Change this to
+ return the line number from your message, alternatively return None to
+ disable error line check."""
     return int(err.split()[4][:-1])
 
 def convert_name(name):
@@ -38,7 +45,12 @@ def convert_name(name):
     return "{}.hack".format(name[:-4])
 
 def my_assembler(input_path, on_windows=False):
-    """This is the function we pass into the handler to run our program. You need to change this function so that RUN_STRING calls your assembler. If it is required, you can use the on_windows argument to determine whether your program is currently running on a Windows environment vs Unix."""
+    """This is the function we pass into the handler to run our program.
+You need to change this function so that RUN_STRING calls your assembler.
+If it is required, you can use the on_windows argument to determine whether
+your program is currently running on a Windows environment vs Unix."""
+    if on_windows:
+        pass # squelch unused arguement warning
     test_output = convert_name(input_path)
     result = subprocess.run(RUN_STRING.format(PATH_TO_ASSEMBLER, input_path),
                             stdout=subprocess.PIPE,
