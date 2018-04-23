@@ -32,11 +32,11 @@ def my_assembler(input_path, windows=False):
     """Function to run a second reference assembler for testing"""
     return run(THEIR_FOLDER2, input_path, windows)
 
-def fuzz(fail_test, on_windows):
+def fuzz(fail_test, on_windows, my_cond=their_cond):
     """Reduced functionality from __main__ fuzz function for testing purposes"""
     lang_spec = hack.Hack()
     programs = (my_assembler, their_assembler)
-    conds = (their_cond, their_cond)
+    conds = (my_cond, their_cond)
     folders = (THEIR_FOLDER, THEIR_FOLDER2)
     data = {"programs":programs, "conds":conds,
             "log_tuple":(None, None, None), "on_windows":on_windows,

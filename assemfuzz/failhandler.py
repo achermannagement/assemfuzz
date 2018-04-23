@@ -45,6 +45,6 @@ It also does cleanup."""
         self.talk("Their error message: {}".format(their_result.stderr))
         if self.my_cond and self.their_cond:
             res = self.my_cond(my_result.stderr) == self.their_cond(their_result.stderr)
-        else:
+        else: # either function being None disables line check
             res = program_had_error(my_result) and program_had_error(their_result)
         return res

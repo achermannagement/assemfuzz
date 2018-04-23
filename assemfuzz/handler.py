@@ -73,7 +73,7 @@ class Handler(ABC):
 
     def talk(self, msg):
         """Uses the talking stick to write to stdout without contention"""
-        if self.data["log_tuple"][2] != None:
+        if self.data["log_tuple"][2]:
             self.data["log_tuple"][2].acquire()
             print(msg)
             self.data["log_tuple"][2].release()
@@ -103,10 +103,11 @@ class Handler(ABC):
 
     def log(self):
         """Logs a test failure in the error log."""
-        self.data["log_tuple"][1].acquire()
-        errlog = open(self.data["log_tuple"][0], "a")
-        errlog.write("Test failure: {} ".format(self.test_input))
-        self.data["log_tuple"][1].release()
+        if self.data["log_tuple"][0] and self.data["log_tuple"][1]:
+            self.data["log_tuple"][1].acquire()
+            errlog = open(self.data["log_tuple"][0], "a")
+            errlog.write("Test failure: {} ".format(self.test_input))
+            self.data["log_tuple"][1].release()
 
     def check_success(self):
         """Returns whether the test succeeded"""

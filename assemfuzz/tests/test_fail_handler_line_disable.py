@@ -22,8 +22,7 @@ email: joshua.achermann@gmail.com
 #!/bin/python3
 from common import on_win, fuzz
 
-def their_cond(err):
-    return None
+their_cond = None
 
 def test_fuzz():
     """Perform the fuzzing with the given options"""
