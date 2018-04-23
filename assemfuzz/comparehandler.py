@@ -25,8 +25,6 @@ Copyright (C) 2017  Joshua Achermann
 import os
 import filecmp
 
-from assemfuzz.definitions import MY_FOLDER, THEIR_FOLDER
-
 from assemfuzz.handler import Handler
 import assemfuzz.randomfuzzer as randomfuzzer
 
@@ -42,8 +40,8 @@ It also does cleanup."""
         """Compares the output of the generated files and updates the result field accordingly."""
         res = False
         if my_result and their_result and filecmp.cmp(
-                os.path.join(MY_FOLDER, self.test_output),
-                os.path.join(THEIR_FOLDER, self.test_output),
+                os.path.join(self.data['folders'][0], self.test_output),
+                os.path.join(self.data['folders'][1], self.test_output),
                 shallow=False):
             res = True
         return res

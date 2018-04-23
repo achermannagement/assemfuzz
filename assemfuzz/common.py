@@ -27,8 +27,8 @@ import stat
 import subprocess
 
 from assemfuzz.definitions import (
-    MY_FOLDER, THEIR_FOLDER, PATH_TO_ASSEMBLER,
-    COMP_RUN_STRING_LINUX)
+    MY_FOLDER, THEIR_FOLDER, THEIR_FOLDER2,
+    PATH_TO_ASSEMBLER, COMP_RUN_STRING_LINUX)
 
 ZIP_PATH = 'nand2tetris.zip'
 
@@ -57,6 +57,7 @@ def make_folders():
     """Make the empty testbench"""
     pathlib.Path(MY_FOLDER).mkdir(parents=True, exist_ok=True)
     pathlib.Path(THEIR_FOLDER).mkdir(parents=True, exist_ok=True)
+    pathlib.Path(THEIR_FOLDER2).mkdir(parents=True, exist_ok=True)
 
 def prepare_tests(path):
     """Prepare for testing by extracting the refernce assembler into both folders"""
@@ -64,13 +65,13 @@ def prepare_tests(path):
     extract_toolchain(path, MY_FOLDER)
     extract_toolchain(path, THEIR_FOLDER)
 
-def extract_my_toolchain(tool_chain):
-    """Extract given zipfile to mine/ folder"""
-    extract_toolchain(tool_chain, MY_FOLDER)
-
 def extract_their_toolchain(tool_chain):
     """Extract given zipfile to their/ folder"""
     extract_toolchain(tool_chain, THEIR_FOLDER)
+
+def extract_their2_toolchain(tool_chain):
+    """Extract given zipfile to their/ folder"""
+    extract_toolchain(tool_chain, THEIR_FOLDER2)
 
 def extract_toolchain(tool_chain, folder):
     """Extract from zipfile into the selected folder and makes the files inside executable"""
@@ -91,5 +92,7 @@ def extract_toolchain(tool_chain, folder):
 
 def clean_testbench():
     """Clean the testbench"""
-    shutil.rmtree(MY_FOLDER)
-    shutil.rmtree(THEIR_FOLDER)
+    if os.path.exists(THEIR_FOLDER):
+        shutil.rmtree(THEIR_FOLDER)
+    if os.path.exists(THEIR_FOLDER2):
+        shutil.rmtree(THEIR_FOLDER2)

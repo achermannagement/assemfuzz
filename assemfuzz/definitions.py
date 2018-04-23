@@ -22,6 +22,7 @@ Copyright (C) 2017  Joshua Achermann
 """
 MY_FOLDER = "mine"
 THEIR_FOLDER = "theirs"
+THEIR_FOLDER2 = "theirs2"
 
 FILE_TITLE = "fuzz"
 PATH_TO_TEST_FILE = FILE_TITLE + "_{}_{}.hack"

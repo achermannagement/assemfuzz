@@ -29,7 +29,8 @@ import traceback
 
 import assemfuzz.hack as hack
 from assemfuzz.definitions import (
-    DEFAULT_ERR_LOG, PATH_TO_TEST_FILE, PATH_TO_FUZZ_OUTPUT)
+    DEFAULT_ERR_LOG, PATH_TO_TEST_FILE, PATH_TO_FUZZ_OUTPUT,
+    MY_FOLDER, THEIR_FOLDER)
 from assemfuzz.myprogram import my_assembler, my_cond
 import assemfuzz.comparehandler as comparehandler
 import assemfuzz.failhandler as failhandler
@@ -49,8 +50,10 @@ def fuzz(queue, name, fail_test, log_tuple, on_windows):
         (i, j) = name
         programs = (my_assembler, their_assembler)
         conds = (my_cond, their_cond)
+        folders = (MY_FOLDER, THEIR_FOLDER)
         data = {"programs":programs, "conds":conds,
-                "log_tuple":log_tuple, "on_windows":on_windows}
+                "log_tuple":log_tuple, "on_windows":on_windows,
+                "folders": folders}
         if not fail_test:
             handler_inst = comparehandler.CompareHandler(
                 PATH_TO_FUZZ_OUTPUT.format(j, i),

@@ -24,8 +24,6 @@ from abc import ABC, abstractmethod
 import os
 import shutil
 
-from assemfuzz.definitions import MY_FOLDER, THEIR_FOLDER
-
 def program_had_error(result):
     """Helper function to detect errors"""
     return result.stderr != b""
@@ -56,9 +54,9 @@ class Handler(ABC):
         self.fuzzer.prepare_file()
         self.fuzzer.write_file()
         shutil.copy(self.test_input,
-                    os.path.join(MY_FOLDER, self.test_input))
+                    os.path.join(self.data['folders'][0], self.test_input))
         shutil.copy(self.test_input,
-                    os.path.join(THEIR_FOLDER, self.test_input))
+                    os.path.join(self.data['folders'][1], self.test_input))
 
         my_result = self.program_under_test()
         their_result = self.reference_program()
@@ -82,14 +80,14 @@ class Handler(ABC):
 
     def clean(self):
         """Clean test output."""
-        if os.path.exists(os.path.join(MY_FOLDER, self.test_input)):
-            os.remove(os.path.join(MY_FOLDER, self.test_input))
-        if os.path.exists(os.path.join(THEIR_FOLDER, self.test_input)):
-            os.remove(os.path.join(THEIR_FOLDER, self.test_input))
-        if os.path.exists(os.path.join(MY_FOLDER, self.test_output)):
-            os.remove(os.path.join(MY_FOLDER, self.test_output))
-        if os.path.exists(os.path.join(THEIR_FOLDER, self.test_output)):
-            os.remove(os.path.join(THEIR_FOLDER, self.test_output))
+        if os.path.exists(os.path.join(self.data['folders'][0], self.test_input)):
+            os.remove(os.path.join(self.data['folders'][0], self.test_input))
+        if os.path.exists(os.path.join(self.data['folders'][1], self.test_input)):
+            os.remove(os.path.join(self.data['folders'][1], self.test_input))
+        if os.path.exists(os.path.join(self.data['folders'][0], self.test_output)):
+            os.remove(os.path.join(self.data['folders'][0], self.test_output))
+        if os.path.exists(os.path.join(self.data['folders'][1], self.test_output)):
+            os.remove(os.path.join(self.data['folders'][1], self.test_output))
         if os.path.exists(self.test_input):
             os.remove(self.test_input)
         if os.path.exists(os.path.join(self.test_output)):

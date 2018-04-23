@@ -58,7 +58,7 @@ class PrepareCommand(Command):
         """Run the prepare command"""
         assemfuzz.common.make_folders()
         if self.test:
-            assemfuzz.common.extract_my_toolchain(self.path)
+            assemfuzz.common.extract_their2_toolchain(self.path)
         assemfuzz.common.extract_their_toolchain(self.path)
 
 setup(

@@ -23,22 +23,24 @@ import subprocess
 
 import assemfuzz.hack as hack
 from assemfuzz.definitions import (
-    MY_FOLDER, DEFAULT_ERR_LOG, PATH_TO_TEST_FILE,
-    PATH_TO_FUZZ_OUTPUT)
+    THEIR_FOLDER, THEIR_FOLDER2, DEFAULT_ERR_LOG,
+    PATH_TO_TEST_FILE, PATH_TO_FUZZ_OUTPUT)
 import assemfuzz.comparehandler as comparehandler
 import assemfuzz.failhandler as failhandler
 import assemfuzz.definitions
 from assemfuzz.common import run, their_assembler, their_cond
 
 def my_assembler(input_path, windows=False):
-    return run(MY_FOLDER, input_path, windows)
+    return run(THEIR_FOLDER2, input_path, windows)
 
 def fuzz(fail_test, on_windows):
     lang_spec = hack.Hack()
     programs = (my_assembler, their_assembler)
     conds = (their_cond, their_cond)
+    folders = (THEIR_FOLDER, THEIR_FOLDER2)
     data = {"programs":programs, "conds":conds,
-            "log_tuple":(None, None, None), "on_windows":on_windows}
+            "log_tuple":(None, None, None), "on_windows":on_windows,
+            "folders": folders}
     if not fail_test:
         handler_inst = comparehandler.CompareHandler(
             PATH_TO_FUZZ_OUTPUT.format(0, 0),
