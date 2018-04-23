@@ -34,6 +34,7 @@ The output then can be fed into the fuzzed program to find problems."""
         super().__init__(file_name, lang_spec)
         self.length = hack.MAX_SIZE
         self.contents = []
+        # TODO: fix this below line
         self.bad_line = random.randint(0, len(self.contents))
 
     def prepare_file(self):
