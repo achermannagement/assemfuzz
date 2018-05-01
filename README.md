@@ -1,5 +1,5 @@
 # assemfuzz
-This is a project to make a fuzzing platform for the Hack assembly language from the Nand2Tetris (http://nand2tetris.org/) course. A fuzzer generates vast quantities of random (valid or invalid) code in order to test program robustness. It is especially good at detecting inputs that crash a program. However, as we are provided a reference Hack assembler we can also use fuzzing to ensure program correctness.
+This is a project to make a fuzzing platform for the Hack assembly language from the Nand2Tetris (http://nand2tetris.org/) course. A fuzzer generates vast quantities of random (valid or invalid) code in order to test program robustness. It is especially good at detecting inputs that crash a program. However, as we are provided a reference Hack assembler we can also use fuzzing to test program correctness.
 
 ## Features
 * Largely automated fuzzing platform
@@ -65,9 +65,32 @@ If your assembler output does not match the reference compiler, the fuzzing will
 
 ### Configuration
 All configuration for assemfuzz is through arguments.
-You can run the program with the help flag in order to see what options are available.
+You can run the program with the `--help` flag in order to see what options are available.
 
 ## Running the tests
+
+## Setup
+If you want to run most tests, then you will need to provide an assembler, put it into your mine/ directory. If you lack one of your own, you can use the reference assembler from the Nand2Tetris software pack by updating myprogram.py like so:
+
+    PATH_TO_ASSEMBLER = os.path.join("mine", "HackAssembler.jar")
+    RUN_STRING = "java -jar {} {}"
+
+becomes
+
+    PATH_TO_ASSEMBLER = os.path.join("mine", "Assembler.sh")
+    RUN_STRING = "./{} {}"
+
+and
+
+    return int(err.split()[4][:-1])
+
+becomes
+
+    from assemfuzz.common import their_cond
+    return their_cond(err)
+
+## Test Plugins
+
 PyTest and Tox are used to run tests in the setup file.
 
 First run the prepare command to extract the software suite.

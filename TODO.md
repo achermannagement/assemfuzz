@@ -33,3 +33,4 @@
 
 ## Other
 + I hope to extend this fuzzing platform to include more of Nand2Tetris stack
++ Originally I planned to include an example assembler (my Java implementation) but Java is insanely easy to decompile and it would be basically posting the solution which is detrimental to the purpose of education, so instead I included instructions to use the reference assembler
