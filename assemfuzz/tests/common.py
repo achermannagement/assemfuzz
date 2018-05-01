@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 email: joshua.achermann@gmail.com
 """
 import os
+import argparse
 
 import assemfuzz.hack as hack
 from assemfuzz.definitions import (
@@ -31,6 +32,18 @@ from assemfuzz.common import run, their_assembler, their_cond
 def my_assembler(input_path, windows=False):
     """Function to run a second reference assembler for testing"""
     return run(THEIR_FOLDER2, input_path, windows)
+
+def set_args(licensed, tests, cores, errlog, halt_fail_count, verbose, fail):
+    """Set program arguments to test"""
+    args = argparse.ArgumentParser()
+    args.license = licensed
+    args.tests = tests
+    args.cores = cores
+    args.errlog = errlog
+    args.halt_fail_count = halt_fail_count
+    args.verbose = verbose
+    args.fail = fail
+    return args
 
 def fuzz(fail_test, on_windows, my_cond=their_cond):
     """Reduced functionality from __main__ fuzz function for testing purposes"""

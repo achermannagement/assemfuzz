@@ -22,12 +22,12 @@ email: joshua.achermann@gmail.com
 #!/bin/python3
 from common import on_win, fuzz
 
-their_cond = None
+THEIR_COND = None
 
 def test_fuzz():
     """Perform the fuzzing with the given options"""
     on_windows = on_win()
-    fuzz(True, on_windows, their_cond)
+    fuzz(True, on_windows, THEIR_COND)
 
 if __name__ == "__main__":
     test_fuzz()

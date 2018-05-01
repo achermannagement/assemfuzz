@@ -20,24 +20,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 email: joshua.achermann@gmail.com
 """
 #!/bin/python3
-import argparse
-
 from assemfuzz.__main__ import perform, on_win
 from assemfuzz.definitions import DEFAULT_ERR_LOG
+from assemfuzz.tests.common import set_args
 
 def test_assemfuzz():
     """Uses the default handler and random fuzzer to run multiple
     fuzzing rounds on the assembler defined in defintions.py
     """
-    args = argparse.ArgumentParser()
-    args.license = False
-    args.tests = 2
-    args.cores = 2
-    args.errlog = DEFAULT_ERR_LOG
-    args.halt_fail_count = 1
-    args.verbose = False
-    args.fail = True
-
+    args = set_args(False, 2, 2, DEFAULT_ERR_LOG, 1, False, True)
     perform(args, on_win())
 
 if __name__ == "__main__":
