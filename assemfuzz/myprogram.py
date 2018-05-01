@@ -55,6 +55,6 @@ your program is currently running on a Windows environment vs Unix."""
     result = subprocess.run(RUN_STRING.format(PATH_TO_ASSEMBLER, input_path),
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE, shell=True)
-    if result.returncode == 0:
+    if result.stderr == b'':
         os.rename(test_output, os.path.join(MY_FOLDER, test_output))
     return result
